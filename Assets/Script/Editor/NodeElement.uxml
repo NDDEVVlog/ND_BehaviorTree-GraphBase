@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Script/Editor/NodeElement.uss?fileID=7433441132597879392&amp;guid=1bcb927272845eb40815dce4b29d2568&amp;type=3#NodeElement" />
+    <ui:VisualElement class="node-container">
+        <ui:VisualElement class="node-square">
+            <ui:VisualElement class="corner-circle top-left" />
+            <ui:VisualElement class="corner-circle top-right" />
+            <ui:VisualElement class="corner-circle bottom-left" />
+            <ui:VisualElement class="corner-circle bottom-right" />
+            <ui:Label text="Node" class="node-name" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

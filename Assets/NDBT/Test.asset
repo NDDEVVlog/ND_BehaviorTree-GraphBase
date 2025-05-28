@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e30e10dae0a048499a4cc3b0964bcbf, type: 3}
+  m_Name: Test
+  m_EditorClassIdentifier: 
+  m_nodes:
+  - rid: 2286870472543174663
+  - rid: 2286870472543174664
+  - rid: 2286870472543174665
+  m_connection: []
+  conections:
+  - inputPort:
+      nodeID: 42887df2-2b91-4e8f-bd24-a642d693e467
+      portIndex: 0
+    outputPort:
+      nodeID: 339ed4fc-951f-4958-af21-609343a846b9
+      portIndex: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 2286870472543174663
+      type: {class: DebugLogNode, ns: ND_BehaviourTrees, asm: ND_BehaviorTree.Runtime}
+      data:
+        m_guid: 339ed4fc-951f-4958-af21-609343a846b9
+        m_position:
+          serializedVersion: 2
+          x: 656
+          y: 200.8
+          width: 115.20001
+          height: 76.79999
+        typeName: ND_BehaviourTrees.DebugLogNode, ND_BehaviorTree.Runtime, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+    - rid: 2286870472543174664
+      type: {class: RootNode, ns: ND_BehaviourTrees, asm: ND_BehaviorTree.Runtime}
+      data:
+        m_guid: f69eac10-4e9f-4d19-b61d-5841cd223537
+        m_position:
+          serializedVersion: 2
+          x: 401.6
+          y: 109.600006
+          width: 73.600006
+          height: 76.8
+        typeName: ND_BehaviourTrees.RootNode, ND_BehaviorTree.Runtime, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+    - rid: 2286870472543174665
+      type: {class: DebugLogNode, ns: ND_BehaviourTrees, asm: ND_BehaviorTree.Runtime}
+      data:
+        m_guid: 42887df2-2b91-4e8f-bd24-a642d693e467
+        m_position:
+          serializedVersion: 2
+          x: 448
+          y: 254.40001
+          width: 115.20001
+          height: 76.79999
+        typeName: ND_BehaviourTrees.DebugLogNode, ND_BehaviorTree.Runtime, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
