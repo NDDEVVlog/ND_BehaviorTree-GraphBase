@@ -29,5 +29,17 @@ namespace ND_BehaviourTrees
         {
             m_position = position;
         }
+
+        public virtual string OnProcess(BehaviourTree tree)
+        {
+            Node nextNodeInFlow = tree.GetNodeFromOutputConnection(m_guid, 0);
+            if (nextNodeInFlow != null)
+            {
+                return nextNodeInFlow.id;
+            }
+            return string.Empty;
+        }
+
+        
     }
 }
