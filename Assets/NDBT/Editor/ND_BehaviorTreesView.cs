@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -35,12 +36,12 @@ namespace ND_BehaviourTrees.Editor
 
             m_treeNodes = new List<ND_NodeEditor>();
             m_nodeDictionary = new Dictionary<string, ND_NodeEditor>();
-            m_connectionDictionary = new Dictionary<Edge,ND_BTConnection >();
-            
+            m_connectionDictionary = new Dictionary<Edge, ND_BTConnection>();
+
 
             m_searchProvider = ScriptableObject.CreateInstance<ND_BehaviorTreeWindowSearchProvider>();
             m_searchProvider.view = this;
-            
+
             this.nodeCreationRequest = ShowSearchWindow;
 
             StyleSheet style = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/NDBT/Editor/USS/BehaviourTreeView/BehaviourTreeView.uss");
@@ -73,7 +74,7 @@ namespace ND_BehaviourTrees.Editor
                 allPorts.AddRange(node.Ports);
             }
             foreach (Port p in allPorts)
-            {   
+            {
                 //Validate 
                 if (p == startPort) continue;
                 if (p.node == startPort.node) continue;
@@ -128,7 +129,7 @@ namespace ND_BehaviourTrees.Editor
                 }
             }
 
-            
+
 
 
             return graphViewChange;
@@ -143,17 +144,17 @@ namespace ND_BehaviourTrees.Editor
             int outputIndex = outputNode.Ports.IndexOf(edge.output);
 
             ND_BTConnection connection = new ND_BTConnection(inputNode.node.id, inputIndex, outputNode.node.id, outputIndex);
-            m_BTree.conections.Add(connection);
+            m_BTree.connections.Add(connection);
         }
 
         private void RemoveEdge(Edge e)
         {
             if (m_connectionDictionary.TryGetValue(e, out ND_BTConnection connection))
             {
-                m_BTree.conections.Remove(connection);
+                m_BTree.connections.Remove(connection);
                 m_connectionDictionary.Remove(e);
             }
-            
+
         }
 
         private void RemoveNode(ND_NodeEditor editorNode)
@@ -171,12 +172,13 @@ namespace ND_BehaviourTrees.Editor
             {
                 AddNodeToGraph(node);
             }
+            Bind();
         }
 
         private void DrawConnection()
         {
-            if (m_BTree.conections == null) return;
-            foreach (ND_BTConnection connection in m_BTree.conections)
+            if (m_BTree.connections == null) return;
+            foreach (ND_BTConnection connection in m_BTree.connections)
             {
                 MakeConnection(connection);
             }
@@ -195,7 +197,7 @@ namespace ND_BehaviourTrees.Editor
             AddElement(edge);
 
             m_connectionDictionary.Add(edge, connection);
-            
+
         }
 
         private ND_NodeEditor GetNode(string nodeID)
@@ -212,25 +214,31 @@ namespace ND_BehaviourTrees.Editor
         }
 
         public void Add(Node node)
-        {   
+        {
             Undo.RecordObject(m_serialLizeObject.targetObject, "Added Node");
             m_BTree.nodes.Add(node);
             m_serialLizeObject.Update();
 
             AddNodeToGraph(node);
-
+            Bind();
         }
 
         private void AddNodeToGraph(Node node)
         {
             node.typeName = node.GetType().AssemblyQualifiedName;
 
-            ND_NodeEditor nodeEditor = new ND_NodeEditor(node);
+            ND_NodeEditor nodeEditor = new ND_NodeEditor(node, m_serialLizeObject);
             nodeEditor.SetPosition(node.position);
             m_treeNodes.Add(nodeEditor);
             m_nodeDictionary.Add(node.id, nodeEditor);
 
             AddElement(nodeEditor);
+        }
+
+        private void Bind()
+        {
+            m_serialLizeObject.Update();
+            this.Bind(m_serialLizeObject);
         }
     }
 }
