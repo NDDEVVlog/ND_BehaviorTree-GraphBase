@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ND_BehaviourTrees
+namespace ND_DrawTrello
 {
     public class TestObject : MonoBehaviour
     {   
         
         
-        public BehaviourTree tree;
-        public BehaviourTree treeInstance;
+        public DrawTrello tree;
+        public DrawTrello treeInstance;
 
         public void OnEnable()
         {   

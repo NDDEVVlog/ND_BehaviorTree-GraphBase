@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace ND_BehaviourTrees
+namespace ND_DrawTrello
 {
     [CreateAssetMenu(menuName = "BehaviourTree/Trees")]
-    public class BehaviourTree : ScriptableObject
+    public class DrawTrello : ScriptableObject
     {
         [SerializeReference] private List<Node> m_nodes;
 
@@ -19,7 +19,7 @@ namespace ND_BehaviourTrees
 
         private Dictionary<string, Node> nodeDictionary;
 
-        public BehaviourTree()
+        public DrawTrello()
         {
             m_nodes = new List<Node>();
             m_connection = new List<ND_BTConnection>();

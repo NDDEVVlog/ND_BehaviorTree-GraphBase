@@ -11,7 +11,7 @@ using UnityEditor;
 using UnityEngine.UIElements;
 using System.Linq;
 
-namespace ND_BehaviourTrees.Editor
+namespace ND_DrawTrello.Editor
 {
     public class ND_NodeEditor : NodeElements, IDropTarget
     {
@@ -30,7 +30,7 @@ namespace ND_BehaviourTrees.Editor
         private VisualElement m_BottomPortContainer;
         private VisualElement m_DragableNodeContainer; // This will be the target for dropped nodes
 
-        public ND_NodeEditor(Node node, SerializedObject BTObject) : base(ND_BTSetting.Instance.GetNodeDefaultUXMLPath())
+        public ND_NodeEditor(Node node, SerializedObject BTObject) : base(ND_DrawTrelloSetting.Instance.GetNodeDefaultUXMLPath())
         {
             StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/NDBT/Editor/Resources/Styles/VisualElement/NodeElementUss.uss");
             if (styleSheet != null)

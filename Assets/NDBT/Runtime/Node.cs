@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor.Search;
 using UnityEngine;
 
-namespace ND_BehaviourTrees
+namespace ND_DrawTrello
 {
     [System.Serializable]
     public class Node
@@ -30,7 +30,7 @@ namespace ND_BehaviourTrees
             m_position = position;
         }
 
-        public virtual string OnProcess(BehaviourTree tree)
+        public virtual string OnProcess(DrawTrello tree)
         {
             Node nextNodeInFlow = tree.GetNodeFromOutputConnection(m_guid, 0);
             if (nextNodeInFlow != null)

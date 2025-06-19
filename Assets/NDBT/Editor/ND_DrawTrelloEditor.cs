@@ -4,18 +4,18 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
 
-namespace ND_BehaviourTrees.Editor
+namespace ND_DrawTrello.Editor
 {   
-    [CustomEditor(typeof(BehaviourTree))]
-    public class ND_BehaviourTreeEditor : UnityEditor.Editor
+    [CustomEditor(typeof(DrawTrello))]
+    public class ND_DrawTrelloEditor : UnityEditor.Editor
     {
         [OnOpenAsset]
         public static bool OnOpenAsset(int instanceID, int index)
         {
             Object asset = EditorUtility.InstanceIDToObject(instanceID);
-            if (asset.GetType() == typeof(BehaviourTree))
+            if (asset.GetType() == typeof(DrawTrello))
             {
-                ND_BehaviorTreesEditorWindow.Open((BehaviourTree)asset);
+                ND_DrawTrelloEditorWindow.Open((DrawTrello)asset);
                 return true;
             }
             return false;
@@ -25,7 +25,7 @@ namespace ND_BehaviourTrees.Editor
         {
             if (GUILayout.Button("Open"))
             {
-                ND_BehaviorTreesEditorWindow.Open((BehaviourTree)target);
+                ND_DrawTrelloEditorWindow.Open((DrawTrello)target);
 
             }
         }

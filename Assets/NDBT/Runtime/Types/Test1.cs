@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ND_BehaviourTrees
+namespace ND_DrawTrello
 {   [NodeInfo("Debug_Log", "Debug/Test1")]
     public class Test1 : Node
     {   

@@ -1,12 +1,8 @@
 {
-    "name": "ND_BehaviorTree",
-    "rootNamespace": "ND_BehaviourTrees.Editor",
-    "references": [
-        "GUID:c3359f1f587792047b8766b8670f3f7a"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "name": "ND_DrawTrello.Runtime",
+    "rootNamespace": "ND_DrawTrello",
+    "references": [],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

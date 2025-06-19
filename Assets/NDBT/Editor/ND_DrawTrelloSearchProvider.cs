@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor;
 
-namespace ND_BehaviourTrees.Editor
+namespace ND_DrawTrello.Editor
 {
     public struct SearchContextElement
     {
@@ -22,9 +22,9 @@ namespace ND_BehaviourTrees.Editor
         }
     }
 
-    public class ND_BehaviorTreeWindowSearchProvider : ScriptableObject, ISearchWindowProvider
+    public class ND_DrawTrelloSearchProvider : ScriptableObject, ISearchWindowProvider
     {
-        public ND_BehaviorTreesView view;
+        public ND_DrawTrelloView view;
         public VisualElement target;
 
         public static List<SearchContextElement> elements;

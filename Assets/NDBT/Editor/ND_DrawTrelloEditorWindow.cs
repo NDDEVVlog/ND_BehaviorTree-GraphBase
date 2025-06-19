@@ -2,18 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using ND_BehaviourTrees;
+using ND_DrawTrello;
 using System.Security;
 using UnityEditor.Experimental.GraphView;
 using System;
 
-namespace ND_BehaviourTrees.Editor
+namespace ND_DrawTrello.Editor
 {
-    public class ND_BehaviorTreesEditorWindow : EditorWindow
+    public class ND_DrawTrelloEditorWindow : EditorWindow
     {
-        public static void Open(BehaviourTree target)
+        public static void Open(DrawTrello target)
         {
-            ND_BehaviorTreesEditorWindow[] windows = Resources.FindObjectsOfTypeAll<ND_BehaviorTreesEditorWindow>();
+            ND_DrawTrelloEditorWindow[] windows = Resources.FindObjectsOfTypeAll<ND_DrawTrelloEditorWindow>();
             foreach (var n in windows)
             {
                 if (n.currentGraph == target)
@@ -22,16 +22,16 @@ namespace ND_BehaviourTrees.Editor
                     return;
                 }
             }
-            ND_BehaviorTreesEditorWindow window = CreateWindow<ND_BehaviorTreesEditorWindow>(typeof(ND_BehaviorTreesEditorWindow), typeof(SceneView));
-            window.titleContent = new GUIContent($"{target.name}", EditorGUIUtility.ObjectContent(null, typeof(BehaviourTree)).image);
+            ND_DrawTrelloEditorWindow window = CreateWindow<ND_DrawTrelloEditorWindow>(typeof(ND_DrawTrelloEditorWindow), typeof(SceneView));
+            window.titleContent = new GUIContent($"{target.name}", EditorGUIUtility.ObjectContent(null, typeof(DrawTrello)).image);
             window.Load(target);
         }
 
-        [SerializeField] private BehaviourTree m_currentGraph;
+        [SerializeField] private DrawTrello m_currentGraph;
         [SerializeField] private SerializedObject m_serializeObject;
-        [SerializeField] private ND_BehaviorTreesView m_currentView;
+        [SerializeField] private ND_DrawTrelloView m_currentView;
 
-        public BehaviourTree currentGraph => m_currentGraph;
+        public DrawTrello currentGraph => m_currentGraph;
 
         private void OnEnable()
         {
@@ -41,7 +41,7 @@ namespace ND_BehaviourTrees.Editor
             }
         }
 
-        public void Load(BehaviourTree target)
+        public void Load(DrawTrello target)
         {   
             //LoadGraph
             m_currentGraph = target;
@@ -52,7 +52,7 @@ namespace ND_BehaviourTrees.Editor
         private void DrawGraph()
         {
             m_serializeObject = new SerializedObject(m_currentGraph);
-            m_currentView = new ND_BehaviorTreesView(m_serializeObject, this);
+            m_currentView = new ND_DrawTrelloView(m_serializeObject, this);
             m_currentView.graphViewChanged += OnChange;
             rootVisualElement.Add(m_currentView);
 

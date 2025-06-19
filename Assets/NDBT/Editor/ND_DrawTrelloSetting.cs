@@ -3,11 +3,11 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace ND_BehaviourTrees.Editor
+namespace ND_DrawTrello.Editor
 {
     // Add a menuName for easier manual creation if needed, though the singleton handles it.
-    [CreateAssetMenu(fileName = "ND_BTSettings", menuName = "ND_BehaviourTrees/Settings Asset")]
-    public sealed class ND_BTSetting : ScriptableObject
+    [CreateAssetMenu(fileName = "ND_DrawTrello", menuName = "ND_BehaviourTrees/Settings Asset")]
+    public sealed class ND_DrawTrelloSetting : ScriptableObject
     {
 
         private const string SettingsAssetPath = "Assets/NDBT/Editor/Resources/ND_BTSettings.asset";
@@ -16,15 +16,15 @@ namespace ND_BehaviourTrees.Editor
         [SerializeField]
         private VisualTreeAsset defaultNodeUXML;
 
-        private static ND_BTSetting _instance;
+        private static ND_DrawTrelloSetting _instance;
 
-        public static ND_BTSetting Instance
+        public static ND_DrawTrelloSetting Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = AssetDatabase.LoadAssetAtPath<ND_BTSetting>(SettingsAssetPath);
+                    _instance = AssetDatabase.LoadAssetAtPath<ND_DrawTrelloSetting>(SettingsAssetPath);
 
                     if (_instance == null)
                     {
@@ -35,7 +35,7 @@ namespace ND_BehaviourTrees.Editor
                             Directory.CreateDirectory(directoryPath);
                         }
 
-                        _instance = CreateInstance<ND_BTSetting>();
+                        _instance = CreateInstance<ND_DrawTrelloSetting>();
                         AssetDatabase.CreateAsset(_instance, SettingsAssetPath);
                         AssetDatabase.SaveAssets(); // Save the newly created asset
                         AssetDatabase.Refresh();    // Make sure Unity's asset database is aware of the new file

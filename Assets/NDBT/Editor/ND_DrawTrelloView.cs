@@ -10,36 +10,36 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 
-namespace ND_BehaviourTrees.Editor
+namespace ND_DrawTrello.Editor
 {
-    public class ND_BehaviorTreesView : GraphView
+    public class ND_DrawTrelloView : GraphView
     {
-        private BehaviourTree m_BTree;
+        private DrawTrello m_BTree;
         private SerializedObject m_serialLizeObject;
 
-        private ND_BehaviorTreesEditorWindow m_window;
-        public ND_BehaviorTreesEditorWindow window => m_window;
+        private ND_DrawTrelloEditorWindow m_window;
+        public ND_DrawTrelloEditorWindow window => m_window;
 
         public List<ND_NodeEditor> m_treeNodes;
 
         public Dictionary<Edge, ND_BTConnection> m_connectionDictionary;
         public Dictionary<string, ND_NodeEditor> m_nodeDictionary;
 
-        private ND_BehaviorTreeWindowSearchProvider m_searchProvider;
+        private ND_DrawTrelloSearchProvider m_searchProvider;
 
-        public ND_BehaviorTreesView(SerializedObject serializedObject, ND_BehaviorTreesEditorWindow window)
+        public ND_DrawTrelloView(SerializedObject serializedObject, ND_DrawTrelloEditorWindow window)
         {
             m_window = window;
 
             m_serialLizeObject = serializedObject;
-            m_BTree = (BehaviourTree)serializedObject.targetObject;
+            m_BTree = (DrawTrello)serializedObject.targetObject;
 
             m_treeNodes = new List<ND_NodeEditor>();
             m_nodeDictionary = new Dictionary<string, ND_NodeEditor>();
             m_connectionDictionary = new Dictionary<Edge, ND_BTConnection>();
 
 
-            m_searchProvider = ScriptableObject.CreateInstance<ND_BehaviorTreeWindowSearchProvider>();
+            m_searchProvider = ScriptableObject.CreateInstance<ND_DrawTrelloSearchProvider>();
             m_searchProvider.view = this;
 
             this.nodeCreationRequest = ShowSearchWindow;
@@ -59,6 +59,8 @@ namespace ND_BehaviourTrees.Editor
 
             DrawNodes();
             DrawConnection();
+
+            this.SetupZoom(0.1f, 3.0f);
 
             graphViewChanged += OnGraphViewChangeEvent;
         }

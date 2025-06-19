@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ND_BehaviourTrees
+namespace ND_DrawTrello
 {
     [System.Serializable]
     public struct ND_BTConnection
