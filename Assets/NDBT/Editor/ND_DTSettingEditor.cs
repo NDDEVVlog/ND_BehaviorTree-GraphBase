@@ -10,9 +10,8 @@ namespace ND_DrawTrello.Editor
     {
         public override void OnInspectorGUI()
         {
-            Debug.Log("Test");
-
-
+            Debug.Log("ND_DTSettingEditor is active."); // Optional: for confirming it's working
+            DrawDefaultInspector(); // This will draw all serializable fields, including defaultNodeUXML
         }
     }
 }

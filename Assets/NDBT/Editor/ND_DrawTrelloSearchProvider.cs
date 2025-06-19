@@ -126,7 +126,7 @@ namespace ND_DrawTrello.Editor
             node.SetPosition(new Rect(graphMousePosition, new Vector2()));
 
             // Add node to the graph
-            view.Add(node);
+            view.AddNewNode(node);
 
             return true;
         }

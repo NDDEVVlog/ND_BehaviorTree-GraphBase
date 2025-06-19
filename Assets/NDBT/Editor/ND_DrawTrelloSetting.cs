@@ -6,11 +6,12 @@ using UnityEngine.UIElements;
 namespace ND_DrawTrello.Editor
 {
     // Add a menuName for easier manual creation if needed, though the singleton handles it.
-    [CreateAssetMenu(fileName = "ND_DrawTrello", menuName = "ND_BehaviourTrees/Settings Asset")]
+    [CreateAssetMenu(fileName = "ND_DrawTrello", menuName = "ND_DrawTrello/Settings Asset")]
     public sealed class ND_DrawTrelloSetting : ScriptableObject
     {
 
-        private const string SettingsAssetPath = "Assets/NDBT/Editor/Resources/ND_BTSettings.asset";
+        public string Hele = "Huh";
+        private const string SettingsAssetPath = "Assets/NDBT/Editor/Resources/ND_DrawTrello.asset";
 
         [Tooltip("The UXML file to use for the default appearance of nodes in the Behavior Tree editor.")]
         [SerializeField]
@@ -91,5 +92,7 @@ namespace ND_DrawTrello.Editor
                     "The ND_BTSetting asset has been selected (or created).\n\nPlease assign the 'Default Node UXML' field in the Inspector.", "OK");
             }
         }
+        
+        
     }
 }

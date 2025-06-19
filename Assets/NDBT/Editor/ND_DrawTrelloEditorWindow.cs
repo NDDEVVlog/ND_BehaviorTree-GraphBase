@@ -65,6 +65,9 @@ namespace ND_DrawTrello.Editor
             return graphViewChange;
         }
 
-        
+        public void SetUnsavedChanges(bool unsaved)
+        {
+            this.hasUnsavedChanges = unsaved;
+        }
     }
 }

@@ -1,4 +1,4 @@
-ND_BehaviorTreesView {
+ND_DrawTrelloView {
     flex-grow:1;
 }
 #Grid

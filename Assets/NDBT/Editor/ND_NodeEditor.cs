@@ -32,6 +32,7 @@ namespace ND_DrawTrello.Editor
 
         public ND_NodeEditor(Node node, SerializedObject BTObject) : base(ND_DrawTrelloSetting.Instance.GetNodeDefaultUXMLPath())
         {
+            Debug.Log("CreatingNode");
             StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/NDBT/Editor/Resources/Styles/VisualElement/NodeElementUss.uss");
             if (styleSheet != null)
             {

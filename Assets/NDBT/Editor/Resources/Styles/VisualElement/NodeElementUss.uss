@@ -1,15 +1,33 @@
 /* Base Node Styles */
-.nd-node { /* Class added to the ND_NodeEditor itself */
-    min-width: 150px;
+.nd-node {
+    opacity: 0;
+    scale: 0.5 0.5;
+    transition-property: scale, opacity;
+    transition-duration: 0.3s, 0.15s; /* Scale 0.3s, Opacity 0.15s */
+    transition-timing-function: cubic-bezier(0.18, 0.89, 0.32, 1.28), ease-out; /* Bounce for scale */
+}
+
+/* State for when the node is added and should be visible */
+.nd-node.appeared {
+    opacity: 1;
+    scale: 1 1;
+}
+/* For Pop-Down (Disappear) - you might want a different feel */
+.nd-node.disappearing { /* You'd add this class in C# before removal */
+    opacity: 0;
+    scale: 0.8 0.8; /* Shrink down slightly */
+    transition-property: opacity, scale;
+    transition-duration: 0.15s; /* Faster disappear */
+    transition-timing-function: cubic-bezier(0.18, 0.89, 0.32, 1.28), ease-out;
 }
 
 .node-border {
-    background-color: rgb(45, 45, 45); /* Darker background */
-    border-radius: 6px; /* Slightly more rounded */
+    background-color: rgb(45, 45, 45);
+    border-radius: 6px;
     border-width: 1px;
-    border-color: rgb(30, 30, 30); /* Darker border */
-    padding: 0; /* Remove padding to allow port containers to be at edge */
-    min-width:100px; /* ensure node is not too small*/
+    border-color: rgb(30, 30, 30);
+    padding: 0;
+    min-width:100px;
 }
 
 .selection-border {
