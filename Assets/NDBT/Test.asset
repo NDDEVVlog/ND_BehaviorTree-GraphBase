@@ -17,6 +17,8 @@ MonoBehaviour:
   - rid: 2286870472543174664
   - rid: 2286870472543174665
   - rid: 2286870472543174666
+  - rid: 658596585716056064
+  - rid: 658596585716056065
   m_connection:
   - inputPort:
       nodeID: 42887df2-2b91-4e8f-bd24-a642d693e467
@@ -45,30 +47,54 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 658596585716056064
+      type: {class: RootNode, ns: ND_BehaviourTrees, asm: ND_BehaviorTree.Runtime}
+      data:
+        m_guid: 93dff00c-817a-4775-8429-56870a2e3f8c
+        m_position:
+          serializedVersion: 2
+          x: 808
+          y: 467.19995
+          width: 150.40002
+          height: 150.40002
+        typeName: ND_BehaviourTrees.RootNode, ND_BehaviorTree.Runtime, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+    - rid: 658596585716056065
+      type: {class: RootNode, ns: ND_BehaviourTrees, asm: ND_BehaviorTree.Runtime}
+      data:
+        m_guid: 60b31079-e2de-4e65-a51e-dd7771199e10
+        m_position:
+          serializedVersion: 2
+          x: 661.60004
+          y: 819.19995
+          width: 149.59998
+          height: 150.40002
+        typeName: ND_BehaviourTrees.RootNode, ND_BehaviorTree.Runtime, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
     - rid: 2286870472543174663
       type: {class: DebugLogNode, ns: ND_BehaviourTrees, asm: ND_BehaviorTree.Runtime}
       data:
         m_guid: 339ed4fc-951f-4958-af21-609343a846b9
         m_position:
           serializedVersion: 2
-          x: 652.8
-          y: 459.19998
-          width: 177.60004
-          height: 130.4
+          x: 364
+          y: 1107.2001
+          width: 200
+          height: 187.19995
         typeName: ND_BehaviourTrees.DebugLogNode, ND_BehaviorTree.Runtime, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
         Log: ' 1 '
-        number: -53
+        number: 1
     - rid: 2286870472543174664
       type: {class: RootNode, ns: ND_BehaviourTrees, asm: ND_BehaviorTree.Runtime}
       data:
         m_guid: f69eac10-4e9f-4d19-b61d-5841cd223537
         m_position:
           serializedVersion: 2
-          x: 324
-          y: 284.8
-          width: 83.20001
-          height: 68
+          x: 332.8
+          y: 249.59999
+          width: 150.40002
+          height: 107.20001
         typeName: ND_BehaviourTrees.RootNode, ND_BehaviorTree.Runtime, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
     - rid: 2286870472543174665
@@ -77,25 +103,25 @@ MonoBehaviour:
         m_guid: 42887df2-2b91-4e8f-bd24-a642d693e467
         m_position:
           serializedVersion: 2
-          x: 176.8
-          y: 435.19998
-          width: 185.59999
-          height: 130.4
+          x: 327.2
+          y: 427.19998
+          width: 150.4
+          height: 124.80002
         typeName: ND_BehaviourTrees.DebugLogNode, ND_BehaviorTree.Runtime, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
         Log: OMG
-        number: 2
+        number: 1
     - rid: 2286870472543174666
       type: {class: DebugLogNode, ns: ND_BehaviourTrees, asm: ND_BehaviorTree.Runtime}
       data:
         m_guid: e5f941dd-a94f-4aa6-9b2c-a0ef7d5fff17
         m_position:
           serializedVersion: 2
-          x: 378.4
-          y: 451.19998
-          width: 213.6
-          height: 130.4
+          x: 343.2
+          y: 755.2
+          width: 244
+          height: 323.19995
         typeName: ND_BehaviourTrees.DebugLogNode, ND_BehaviorTree.Runtime, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
         Log: "Mao Ph\u1EAFc"
-        number: 4
+        number: 1

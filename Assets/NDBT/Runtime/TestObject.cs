@@ -6,17 +6,21 @@ using UnityEngine;
 namespace ND_BehaviourTrees
 {
     public class TestObject : MonoBehaviour
-    {
+    {   
+        
+        
         public BehaviourTree tree;
         public BehaviourTree treeInstance;
+
         public void OnEnable()
-        {
+        {   
             treeInstance = Instantiate(tree);
             ExecuateAccess();
         }
 
         private void ExecuateAccess()
-        {
+        {   
+            
             treeInstance.Init();
             Node rootNode = treeInstance.GetRootNode();
             ProcessAndMoveToNextNode(rootNode);

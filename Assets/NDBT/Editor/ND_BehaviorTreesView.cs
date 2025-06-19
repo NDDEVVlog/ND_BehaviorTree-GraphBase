@@ -44,7 +44,7 @@ namespace ND_BehaviourTrees.Editor
 
             this.nodeCreationRequest = ShowSearchWindow;
 
-            StyleSheet style = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/NDBT/Editor/USS/BehaviourTreeView/BehaviourTreeView.uss");
+            StyleSheet style = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/NDBT/Editor/Resources/Styles/BehaviourTreeView/BehaviourTreeView.uss");
             styleSheets.Add(style);
 
             GridBackground background = new GridBackground();
@@ -134,6 +134,10 @@ namespace ND_BehaviourTrees.Editor
 
             return graphViewChange;
         }
+
+
+        
+
 
         private void CreateEdge(Edge edge)
         {

@@ -1,7 +1,0 @@
-.scriptable-object-item { background-color: #FF0000; /* Red background / padding: 5px; margin: 5px; border-radius: 3px; border-width: 1px; border-color: #8B0000; / Darker red border / -unity-text-align: middle-left; height: 50px; / Increased height to accommodate FloatField / flex-direction: column; / Stack elements vertically */ }
-
-.scriptable-object-item-icon { top: 7px; width: 17px; height: 6px; margin-left: -20px; border-radius: 3px; background-color: #FFFFFF; /* White icon for visibility */ }
-
-.scriptable-object-label { padding-left: 20px; height: 20px; }
-
-.scriptable-object-float { padding-left: 20px; width: 150px; }
