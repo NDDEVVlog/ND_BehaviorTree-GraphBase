@@ -6,8 +6,7 @@ using UnityEngine;
 
 namespace ND_DrawTrello
 {
-    [System.Serializable]
-    public class Node
+    public class Node: ScriptableObject
     {
         [SerializeField] private string m_guid;
 

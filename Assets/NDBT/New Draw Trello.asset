@@ -12,8 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e30e10dae0a048499a4cc3b0964bcbf, type: 3}
   m_Name: New Draw Trello
   m_EditorClassIdentifier: 
-  m_nodes: []
   m_connection: []
-  references:
-    version: 2
-    RefIds: []

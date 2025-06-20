@@ -1,21 +1,28 @@
+
 using System.IO;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UIElements; 
 
 namespace ND_DrawTrello.Editor
 {
-    // Add a menuName for easier manual creation if needed, though the singleton handles it.
-    [CreateAssetMenu(fileName = "ND_DrawTrello", menuName = "ND_DrawTrello/Settings Asset")]
+    [CreateAssetMenu(fileName = "ND_DrawTrello_Settings", menuName = "ND_DrawTrello/Settings Asset")] // Standardized name
     public sealed class ND_DrawTrelloSetting : ScriptableObject
     {
 
-        public string Hele = "Huh";
-        private const string SettingsAssetPath = "Assets/NDBT/Editor/Resources/ND_DrawTrello.asset";
+        [HideInInspector] 
+        public string enableSettingPassword = "SubcribeToNDDEVGAME"; 
 
-        [Tooltip("The UXML file to use for the default appearance of nodes in the Behavior Tree editor.")]
+        // Corrected path to match the CreateAssetMenu fileName if that's the intention
+        private const string SettingsAssetPath = "Assets/NDBT/Editor/Resources/ND_DrawTrello_Settings.asset";
+
+        [Tooltip("The UXML file to use for the default appearance of nodes in the editor.")]
         [SerializeField]
         private VisualTreeAsset defaultNodeUXML;
+
+        [Tooltip("The USS file for the main GraphView's appearance.")]
+        [SerializeField]
+        private StyleSheet graphViewStyle;
 
         private static ND_DrawTrelloSetting _instance;
 
@@ -26,73 +33,50 @@ namespace ND_DrawTrello.Editor
                 if (_instance == null)
                 {
                     _instance = AssetDatabase.LoadAssetAtPath<ND_DrawTrelloSetting>(SettingsAssetPath);
-
                     if (_instance == null)
                     {
-                        // Ensure the directory exists before creating the asset
                         string directoryPath = Path.GetDirectoryName(SettingsAssetPath);
                         if (!string.IsNullOrEmpty(directoryPath) && !Directory.Exists(directoryPath))
                         {
                             Directory.CreateDirectory(directoryPath);
                         }
-
                         _instance = CreateInstance<ND_DrawTrelloSetting>();
                         AssetDatabase.CreateAsset(_instance, SettingsAssetPath);
-                        AssetDatabase.SaveAssets(); // Save the newly created asset
-                        AssetDatabase.Refresh();    // Make sure Unity's asset database is aware of the new file
-                        Debug.LogWarning("Created new ND_BTSetting at: " + SettingsAssetPath +
-                                       ". Please select it and assign the 'Default Node UXML' in the Inspector.");
+                        AssetDatabase.SaveAssets();
+                        AssetDatabase.Refresh();
+                        Debug.LogWarning($"Created new ND_DrawTrelloSetting at: {SettingsAssetPath}. Please configure it.");
                     }
                 }
                 return _instance;
             }
         }
 
-        public VisualTreeAsset GetNodeDefaultUXML()
+        public StyleSheet GraphViewStyle => graphViewStyle; // Public getter
+
+        public string GetGraphViewStyleSheetPath()
         {
-            if (defaultNodeUXML == null)
-            {
-                // Make this an error as it's critical
-                Debug.LogError($"CRITICAL: 'Default Node UXML' is not assigned in the ND_BTSetting asset. " +
-                               $"Please select '{SettingsAssetPath}' in the Project window and assign a VisualTreeAsset to it in the Inspector.");
-            }
-            return defaultNodeUXML;
+            if (graphViewStyle == null) return null;
+            return AssetDatabase.GetAssetPath(graphViewStyle);
         }
+
+        public VisualTreeAsset DefaultNodeUXML => defaultNodeUXML; // Public getter
 
         public string GetNodeDefaultUXMLPath()
         {
             if (defaultNodeUXML == null)
             {
-                Debug.LogError($"CRITICAL: 'Default Node UXML' is not assigned in the ND_BTSetting asset. Cannot get path. " +
-                               $"Please select '{SettingsAssetPath}' and assign it.");
-                return null; // Explicitly return null
+                Debug.LogError($"CRITICAL: 'Default Node UXML' is not assigned in {SettingsAssetPath}.");
+                return null;
             }
-
-#if UNITY_EDITOR
-            string path = AssetDatabase.GetAssetPath(defaultNodeUXML);
-            // Debug.Log($"Default Node UXML Path: {path}"); // Optional: Uncomment for debugging
-            return path;
-#else
-            // This case should ideally not be hit if this is an editor-only settings class
-            Debug.LogError("GetNodeDefaultUXMLPath() called outside of UNITY_EDITOR, but AssetDatabase is editor-only. " +
-                           "defaultNodeUXML path cannot be retrieved at runtime this way.");
-            return null;
-#endif
+            return AssetDatabase.GetAssetPath(defaultNodeUXML);
         }
 
-        // Helper to easily find and select the settings asset
-        [MenuItem("Tools/ND_BehaviourTrees/Select Settings Asset", false, 100)]
+        [MenuItem("Tools/ND_DrawTrello/Select Settings Asset", false, 100)]
         public static void SelectSettingsAsset()
         {
-            // This will create the asset if it doesn't exist and then select it.
-            Selection.activeObject = Instance;
-            if (Instance != null && Instance.defaultNodeUXML == null)
-            {
-                EditorUtility.DisplayDialog("ND_BTSetting",
-                    "The ND_BTSetting asset has been selected (or created).\n\nPlease assign the 'Default Node UXML' field in the Inspector.", "OK");
-            }
+            Selection.activeObject = Instance; // This will also trigger Instance creation if needed
+            // Optionally, ping the object in the project window
+            if (Instance != null) EditorGUIUtility.PingObject(Instance);
         }
-        
-        
     }
 }

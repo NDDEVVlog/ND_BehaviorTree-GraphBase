@@ -9,7 +9,7 @@ namespace ND_DrawTrello
     [CreateAssetMenu(menuName = "BehaviourTree/Trees")]
     public class DrawTrello : ScriptableObject
     {
-        [SerializeReference] private List<Node> m_nodes;
+        private List<Node> m_nodes;
 
         [SerializeField] public List<ND_BTConnection> m_connection;
 

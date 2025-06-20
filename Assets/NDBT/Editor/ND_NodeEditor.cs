@@ -94,6 +94,7 @@ namespace ND_DrawTrello.Editor
                     //field.RegisterValueChangeCallback(OnFieldChangeCallBack);
                 }
             }
+            this.AddManipulator(new DoubleClickNodeManipulator(this));
             RefreshExpandedState();
             RefreshPorts();
         }
