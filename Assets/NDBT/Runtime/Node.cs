@@ -20,6 +20,7 @@ namespace ND_DrawTrello
         {
             NewGUID();
         }
+        public void SetNewID(string newID) => m_guid = newID;
         private void NewGUID()
         {
             m_guid = Guid.NewGuid().ToString();

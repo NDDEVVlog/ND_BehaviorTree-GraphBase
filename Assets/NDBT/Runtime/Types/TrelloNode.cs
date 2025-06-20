@@ -1,21 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace ND_DrawTrello
-{
-    public class TrelloNode : MonoBehaviour
-    {
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
+{    [NodeInfo("Trello", "Trello/TrelloDefault")]
+    public class TrelloNode : Node
+    {   
+        [SerializeReference]
+        public List<TrelloChildNode> childrenNode = new List<TrelloChildNode>();
+    }
 
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
+    [Serializable]
+    [NodeInfo("TrelloChild", "Trello/TrelloChild")]
+    public class TrelloChildNode : Node
+    {
+        public string task;
+        public bool isComplete = false;
+
     }
 }

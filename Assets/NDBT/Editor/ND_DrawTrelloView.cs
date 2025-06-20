@@ -196,7 +196,27 @@ namespace ND_DrawTrello.Editor
             }
 
 
-            ND_NodeEditor nodeEditor = new ND_NodeEditor(nodeData, m_serialLizeObject);
+            ND_NodeEditor nodeEditor; // Base type
+
+            // --- TYPE CHECKING LOGIC ---
+            if (nodeData is TrelloNode trelloNodeData) // Check if the data is a TrelloNode
+            {
+                // If you have ND_DrawTrelloSetting.Instance.GetTrelloUXMLPath()
+                // ensure it's used by ND_TrelloNodeEditor's constructor
+                nodeEditor = new ND_TrelloNodeEditor(trelloNodeData, m_serialLizeObject);
+                Debug.Log($"Creating ND_TrelloNodeEditor for node: {nodeData.id}");
+            }
+            // Add more 'else if' blocks here for other specific node editor types
+            else if (nodeData is TrelloChildNode myOtherData)
+            {
+                nodeEditor = new ND_TrelloChild(myOtherData, m_serialLizeObject);
+            }
+            else // Default case: use the generic ND_NodeEditor
+            {
+                // This uses the default UXML path defined in ND_NodeEditor's constructor
+                nodeEditor = new ND_NodeEditor(nodeData, m_serialLizeObject);
+                Debug.Log($"Creating generic ND_NodeEditor for node: {nodeData.id} of type {nodeData.GetType()}");
+            }
             
 
             nodeEditor.SetPosition(nodeData.position); // Set visual position from data

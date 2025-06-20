@@ -19,8 +19,8 @@ namespace ND_DrawTrello.Editor
         private Port m_OutputPort;
 
         private List<Port> m_Ports;
-        private SerializedProperty m_serializedProperty;
-        private SerializedObject m_SerializedObject;
+        public SerializedProperty m_serializedProperty;
+        public SerializedObject m_SerializedObject;
 
         public Node node => m_treeNode;
 
@@ -28,12 +28,42 @@ namespace ND_DrawTrello.Editor
 
         private VisualElement m_TopPortContainer;
         private VisualElement m_BottomPortContainer;
-        private VisualElement m_DragableNodeContainer; // This will be the target for dropped nodes
+        public VisualElement m_DragableNodeContainer; // This will be the target for dropped nodes
 
-        public ND_NodeEditor(Node node, SerializedObject BTObject) : base(ND_DrawTrelloSetting.Instance.GetNodeDefaultUXMLPath())
+        protected ND_NodeEditor(Node node, SerializedObject BTObject, string uxmlPath)
+            : base(uxmlPath) // Pass the UXML path to the base GraphView.Node constructor
+        {   
+            VisualTreeAsset visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
+            if (visualTree != null)
+            {
+                var root = visualTree.CloneTree();
+                this.mainContainer.Clear();
+                this.mainContainer.Add(root); // mainContainer is a standard container in GraphView.Node
+            }
+            else
+            {
+                Debug.LogError($"ND_NodeEditor: VisualTreeAsset not found at {uxmlPath}");
+            }
+            // All initialization now happens here, regardless of which constructor was initially called.
+            InitializeNodeView(node, BTObject);
+        }
+
+        // Public constructor for using the default UXML path.
+        // It now calls the protected constructor using 'this(...)'.
+        public ND_NodeEditor(Node node, SerializedObject BTObject)
+            : this(node, BTObject, ND_DrawTrelloSetting.Instance.GetNodeDefaultUXMLPath())
         {
+            m_treeNode = node;
+            Type typeInfo = node.GetType();
+            NodeInfoAttribute info = typeInfo.GetCustomAttribute<NodeInfoAttribute>();
+            title = info.title;
+        }
+
+        private void InitializeNodeView(Node node, SerializedObject BTObject)
+        {
+
             Debug.Log("CreatingNode");
-            StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/NDBT/Editor/Resources/Styles/VisualElement/NodeElementUss.uss");
+            StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(ND_DrawTrelloSetting.Instance.GetNodeDefaultUSSPath());
             if (styleSheet != null)
             {
                 this.styleSheets.Add(styleSheet);
@@ -52,14 +82,10 @@ namespace ND_DrawTrello.Editor
 
             m_TopPortContainer = this.Q<VisualElement>("top-port");
             m_BottomPortContainer = this.Q<VisualElement>("bottom-port");
-            
+
             // Query for the specific container where nodes can be dropped
             // This targets the *first* element named "draggable-nodes-container" in your UXML.
             m_DragableNodeContainer = this.Q<VisualElement>("draggable-nodes-container");
-
-            if (m_TopPortContainer == null) Debug.LogWarning("ND_NodeEditor: 'top-port' VisualElement not found.");
-            if (m_BottomPortContainer == null) Debug.LogWarning("ND_NodeEditor: 'bottom-port' VisualElement not found.");
-            if (m_DragableNodeContainer == null) Debug.LogError("ND_NodeEditor: 'draggable-nodes-container' VisualElement not found! Dropping nodes into this node will not work.");
 
 
             Type typeInfo = node.GetType();
@@ -76,12 +102,12 @@ namespace ND_DrawTrello.Editor
 
             this.name = typeInfo.Name;
 
-            if (info.HasFlowOutput)
+            if (info.HasFlowOutput && m_BottomPortContainer !=null)
             {
                 CreateOutputPort();
             }
 
-            if (info.HasFlowInput)
+            if (info.HasFlowInput &&  m_TopPortContainer !=null)
             {
                 CreateInputPort();
             }
@@ -189,7 +215,7 @@ namespace ND_DrawTrello.Editor
 
         #region IDropTarget Implementation
 
-        public bool CanAcceptDrop(List<ISelectable> selection)
+        public  bool CanAcceptDrop(List<ISelectable> selection)
         {
             if (m_DragableNodeContainer == null) // Ensure the drop zone exists
             {
@@ -216,12 +242,12 @@ namespace ND_DrawTrello.Editor
             return false;
         }
 
-        public bool DragUpdated(DragUpdatedEvent evt, IEnumerable<ISelectable> selection, IDropTarget dropTarget, ISelection dragSource)
+        public virtual bool DragUpdated(DragUpdatedEvent evt, IEnumerable<ISelectable> selection, IDropTarget dropTarget, ISelection dragSource)
         {
             return CanAcceptDrop(selection.ToList());
         }
 
-        public bool DragPerform(DragPerformEvent evt, IEnumerable<ISelectable> selection, IDropTarget dropTarget, ISelection dragSource)
+        public virtual bool DragPerform(DragPerformEvent evt, IEnumerable<ISelectable> selection, IDropTarget dropTarget, ISelection dragSource)
         {
             if (m_DragableNodeContainer == null) return false;
 
@@ -268,7 +294,7 @@ namespace ND_DrawTrello.Editor
             return false;
         }
 
-        public bool DragEnter(DragEnterEvent evt, IEnumerable<ISelectable> selection, IDropTarget enteredTarget, ISelection dragSource)
+        public  virtual bool DragEnter(DragEnterEvent evt, IEnumerable<ISelectable> selection, IDropTarget enteredTarget, ISelection dragSource)
         {
             if (CanAcceptDrop(selection.ToList()))
             {
@@ -280,14 +306,14 @@ namespace ND_DrawTrello.Editor
             return false;
         }
 
-        public bool DragLeave(DragLeaveEvent evt, IEnumerable<ISelectable> selection, IDropTarget leftTarget, ISelection dragSource)
+        public virtual bool DragLeave(DragLeaveEvent evt, IEnumerable<ISelectable> selection, IDropTarget leftTarget, ISelection dragSource)
         {
             this.RemoveFromClassList("drag-over-target");
             // m_DragableNodeContainer?.RemoveFromClassList("drop-zone-highlight");
             return true;
         }
 
-        public bool DragExited()
+        public virtual bool DragExited()
         {
             this.RemoveFromClassList("drag-over-target");
             // m_DragableNodeContainer?.RemoveFromClassList("drop-zone-highlight");

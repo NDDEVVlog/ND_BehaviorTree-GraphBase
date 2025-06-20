@@ -24,6 +24,18 @@ namespace ND_DrawTrello.Editor
         [SerializeField]
         private StyleSheet graphViewStyle;
 
+        [SerializeField]
+        private StyleSheet nodeDefaultUSS;
+
+        [SerializeField]
+        private VisualTreeAsset trelloNodeUXML;
+        [SerializeField]
+        private VisualTreeAsset trelloChildNodeUXML;
+        [SerializeField]
+        private StyleSheet trelloNodeUSS;
+
+
+
         private static ND_DrawTrelloSetting _instance;
 
         public static ND_DrawTrelloSetting Instance
@@ -50,6 +62,45 @@ namespace ND_DrawTrello.Editor
                 return _instance;
             }
         }
+
+
+
+        public VisualTreeAsset TrelloChildUXML => trelloChildNodeUXML; // Public getter
+
+        public string GetTrelloChildPath()
+        {
+            if (trelloChildNodeUXML == null) return null;
+            return AssetDatabase.GetAssetPath(trelloChildNodeUXML);
+        }
+
+
+        public VisualTreeAsset TrelloUXML => trelloNodeUXML; // Public getter
+
+        public string GetTrelloUXMLPath()
+        {
+            if (trelloNodeUXML == null) return null;
+            return AssetDatabase.GetAssetPath(trelloNodeUXML);
+        }
+
+
+        public StyleSheet TrelloNodeUSSStyle => trelloNodeUSS; // Public getter
+
+        public string GetTrelloUSSPath()
+        {
+            if (trelloNodeUSS == null) return null;
+            return AssetDatabase.GetAssetPath(trelloNodeUSS);
+        }
+
+
+
+        public StyleSheet NodeDefaultUSSStyle => nodeDefaultUSS; // Public getter
+
+        public string GetNodeDefaultUSSPath()
+        {
+            if (nodeDefaultUSS == null) return null;
+            return AssetDatabase.GetAssetPath(nodeDefaultUSS);
+        }
+
 
         public StyleSheet GraphViewStyle => graphViewStyle; // Public getter
 
