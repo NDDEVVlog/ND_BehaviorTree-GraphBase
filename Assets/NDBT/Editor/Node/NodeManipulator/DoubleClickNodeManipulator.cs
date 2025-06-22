@@ -66,7 +66,7 @@ namespace ND_DrawTrello.Editor
             if (nodeAsset is TrelloChildNode trelloChildAsset)
             {
                 Debug.Log($"TrelloChildNode '{_nodeEditorVisual.title}' double-clicked. Opening Trello Card Editor.");
-                TrelloChildNodeEditorWindow.Open(trelloChildAsset); // Open specific window
+                TrelloChildNodeEditorWindow.Open(trelloChildAsset,_nodeEditorVisual); // Open specific window
             }
             else // Fallback for other node types
             {

@@ -32,9 +32,9 @@ namespace ND_DrawTrello.Editor
         private VisualElement m_BottomPortContainer;
         public VisualElement m_DragableNodeContainer; // This will be the target for dropped nodes
 
-        protected ND_NodeEditor(Node node, SerializedObject BTObject,GraphView graphView, string uxmlPath)
+        protected ND_NodeEditor(Node node, SerializedObject BTObject, GraphView graphView, string uxmlPath)
             : base(uxmlPath) // Pass the UXML path to the base GraphView.Node constructor
-        {   
+        {
             VisualTreeAsset visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
             if (visualTree != null)
             {
@@ -52,8 +52,8 @@ namespace ND_DrawTrello.Editor
 
         // Public constructor for using the default UXML path.
         // It now calls the protected constructor using 'this(...)'.
-        public ND_NodeEditor(Node node, SerializedObject BTObject,GraphView graphView)
-            : this(node, BTObject,graphView, ND_DrawTrelloSetting.Instance.GetNodeDefaultUXMLPath())
+        public ND_NodeEditor(Node node, SerializedObject BTObject, GraphView graphView)
+            : this(node, BTObject, graphView, ND_DrawTrelloSetting.Instance.GetNodeDefaultUXMLPath())
         {
             m_treeNode = node;
             Type typeInfo = node.GetType();
@@ -104,12 +104,12 @@ namespace ND_DrawTrello.Editor
 
             this.name = typeInfo.Name;
 
-            if (info.HasFlowOutput && m_BottomPortContainer !=null)
+            if (info.HasFlowOutput && m_BottomPortContainer != null)
             {
                 CreateOutputPort();
             }
 
-            if (info.HasFlowInput &&  m_TopPortContainer !=null)
+            if (info.HasFlowInput && m_TopPortContainer != null)
             {
                 CreateInputPort();
             }
@@ -174,9 +174,10 @@ namespace ND_DrawTrello.Editor
 
             PropertyField field = new PropertyField(prop);
             field.bindingPath = prop.propertyPath; // Not strictly necessary if prop is passed to constructor, but good for clarity.
-            
+
             // Ensure extensionContainer (from base Node class) is valid
-            if (extensionContainer == null) {
+            if (extensionContainer == null)
+            {
                 Debug.LogError($"ND_NodeEditor ({this.title}): extensionContainer is null. Cannot add property field. Check UXML for an element named 'extension'.");
                 return field; // Return field even if not added, to prevent further nullrefs
             }
@@ -263,7 +264,7 @@ namespace ND_DrawTrello.Editor
 
         public virtual bool DragUpdated(DragUpdatedEvent evt, IEnumerable<ISelectable> selection, IDropTarget dropTarget, ISelection dragSource)
         {
-             string nodeTitle = (m_treeNode != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
+            string nodeTitle = (m_treeNode != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
             string draggedItemInfo = GetDraggedItemTitle(selection);
 
             if (dropTarget == this)
@@ -276,8 +277,8 @@ namespace ND_DrawTrello.Editor
         public virtual bool DragPerform(DragPerformEvent evt, IEnumerable<ISelectable> selection, IDropTarget dropTarget, ISelection dragSource)
         {
             if (m_DragableNodeContainer == null) return false;
-           
-            
+
+
             if (CanAcceptDrop(selection.ToList()))
             {
                 ND_NodeEditor droppedNodeEditor = selection.First() as ND_NodeEditor;
@@ -321,7 +322,7 @@ namespace ND_DrawTrello.Editor
             return false;
         }
 
-        public  virtual bool DragEnter(DragEnterEvent evt, IEnumerable<ISelectable> selection, IDropTarget enteredTarget, ISelection dragSource)
+        public virtual bool DragEnter(DragEnterEvent evt, IEnumerable<ISelectable> selection, IDropTarget enteredTarget, ISelection dragSource)
         {
             string nodeTitle = (m_treeNode != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
             if (enteredTarget == this) // Only log if this node is the one being entered
@@ -331,7 +332,7 @@ namespace ND_DrawTrello.Editor
                 {
                     this.AddToClassList("drag-over-target");
                     m_DragableNodeContainer?.AddToClassList("drop-zone-highlight"); // Highlight specific drop zone
-                    
+
                     return true;
                 }
             }
@@ -340,16 +341,19 @@ namespace ND_DrawTrello.Editor
 
         public virtual bool DragLeave(DragLeaveEvent evt, IEnumerable<ISelectable> selection, IDropTarget leftTarget, ISelection dragSource)
         {
-              string nodeTitle = (m_treeNode != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
-              Debug.Log($"<color=orange>DragLeave</color> Node: <b>'{nodeTitle}'</b>.");
+            string nodeTitle = (m_treeNode != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
+            Debug.Log($"<color=orange>DragLeave</color> Node: <b>'{nodeTitle}'</b>.");
             // leftTarget is the element the drag pointer is leaving.
             if (leftTarget == this || this.Contains(leftTarget as VisualElement)) // Check if leaving this node or one of its children
             {
 
                 this.RemoveFromClassList("drag-over-target");
                 m_DragableNodeContainer?.RemoveFromClassList("drop-zone-highlight");
-                //ND_NodeEditor droppedNodeEditor = selection.First() as ND_NodeEditor;
-                //m_DragableNodeContainer.Remove(droppedNodeEditor);
+                ND_NodeEditor droppedNodeEditor = selection.First() as ND_NodeEditor;
+                m_DragableNodeContainer.Remove(droppedNodeEditor);
+                this.GetFirstAncestorOfType<ND_DrawTrelloView>().AddElement(droppedNodeEditor);
+
+
             }
             return true; // Usually true to allow event to propagate if needed
         }
@@ -365,5 +369,8 @@ namespace ND_DrawTrello.Editor
         }
 
         #endregion
+        
+
+        public virtual void UpdateNode(){}
     }
 }

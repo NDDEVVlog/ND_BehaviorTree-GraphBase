@@ -10,10 +10,10 @@ namespace ND_DrawTrello.Editor
     public class ND_TrelloChild : ND_NodeEditor
     {
         private Button m_editButton;
-
-        public ND_TrelloChild(ND_DrawTrello.Node node, SerializedObject BTObject,GraphView graphView)
-            : base(node, BTObject,graphView) // Base loads its shell UXML
-        {   
+        private Label m_taskNameLabel;
+        public ND_TrelloChild(ND_DrawTrello.Node node, SerializedObject BTObject, GraphView graphView)
+            : base(node, BTObject, graphView) // Base loads its shell UXML
+        {
             // ND_NodeEditor's InitializeNodeView has run:
             // - m_SerializedObject is set.
             // - m_treeNode is set.
@@ -21,7 +21,7 @@ namespace ND_DrawTrello.Editor
             //   if this TrelloChildNode's data can be found as a SerializedProperty relative to m_SerializedObject.
 
             // Load and clone the *content* UXML
-            VisualTreeAsset contentVisualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>( ND_DrawTrelloSetting.Instance.GetTrelloChildPath());
+            VisualTreeAsset contentVisualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ND_DrawTrelloSetting.Instance.GetTrelloChildPath());
             if (contentVisualTree != null)
             {
                 var contentRoot = contentVisualTree.CloneTree();
@@ -33,15 +33,17 @@ namespace ND_DrawTrello.Editor
                 this.styleSheets.Add(styleSheet);
 
                 m_SerializedObject = BTObject;
-                
-                
-               
+                m_taskNameLabel = contentRoot.Q<Label>("taskNameLabel");
+
+
+                UpdateNodeName();
+
             }
             else
             {
                 Debug.LogError($"ND_TrelloChild ({this.node?.id}): Could not load content UXML from {ND_DrawTrelloSetting.Instance.GetTrelloChildPath()}");
             }
-            
+
             this.AddToClassList("trello-child-node-view");
 
             // this.capabilities &= ~Capabilities.Movable;
@@ -73,17 +75,23 @@ namespace ND_DrawTrello.Editor
             }
         }
 
+        private void UpdateNodeName()
+        {
+            if (node is TrelloChildNode trelloChild)
+                m_taskNameLabel.text = trelloChild.task;
+        }
+
         private void OnEditTaskClicked()
         {
             TrelloChildNode childNodeData = this.node as TrelloChildNode;
             if (childNodeData != null)
             {
                 Debug.Log($"Edit button clicked for task: '{childNodeData.task}' (ID: {childNodeData.id})");
-                
+
                 // Query within mainContainer where UXML was cloned
                 var taskPropertyField = this.mainContainer.Q<PropertyField>("taskField");
-                TextField taskTextField = taskPropertyField?.Q<TextField>(); 
-                
+                TextField taskTextField = taskPropertyField?.Q<TextField>();
+
                 if (taskTextField != null)
                 {
                     taskTextField.Focus();
@@ -94,6 +102,7 @@ namespace ND_DrawTrello.Editor
                     Debug.LogWarning("ND_TrelloChild: Could not find TextField within taskField to focus.");
                 }
             }
+
         }
 
         public void RequestDelete()
@@ -103,12 +112,19 @@ namespace ND_DrawTrello.Editor
             if (parentTrelloNodeEditor != null && this.node is TrelloChildNode childData)
             {
                 parentTrelloNodeEditor.RemoveChildTaskData(childData);
-                this.RemoveFromHierarchy(); 
+                this.RemoveFromHierarchy();
             }
             else
             {
                 this.parent?.Remove(this);
             }
+        }
+
+        public override void UpdateNode()
+        {
+            Debug.Log("UpdateFromTrello");
+            UpdateNodeName();
+            base.UpdateNode();
         }
     }
 }

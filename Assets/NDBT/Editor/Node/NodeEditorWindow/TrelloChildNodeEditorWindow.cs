@@ -2,18 +2,20 @@
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
+using System.CodeDom;
 
 namespace ND_DrawTrello.Editor
 {
     public class TrelloChildNodeEditorWindow : EditorWindow
     {
         private TrelloChildNode _targetNode;
+        private ND_NodeEditor visualNode;
         private SerializedObject _serializedNodeObject;
         private Vector2 _scrollPosition;
 
         private static Dictionary<string, TrelloChildNodeEditorWindow> _openWindows = new Dictionary<string, TrelloChildNodeEditorWindow>();
 
-        public static void Open(TrelloChildNode nodeToEdit)
+        public static void Open(TrelloChildNode nodeToEdit, ND_NodeEditor nD_Node)
         {
             if (nodeToEdit == null)
             {
@@ -28,14 +30,18 @@ namespace ND_DrawTrello.Editor
             }
 
             TrelloChildNodeEditorWindow window = GetWindow<TrelloChildNodeEditorWindow>(false, "Card Details", true);
-            window.SetNode(nodeToEdit); // SetNode will also set the title
+            window.SetNode(nodeToEdit,nD_Node); // SetNode will also set the title
             window.minSize = new Vector2(380, 450);
             window.Show();
             _openWindows[nodeToEdit.id] = window;
+            //visualNode = nD_Node;
         }
 
-        private void SetNode(TrelloChildNode node)
-        {
+
+
+        private void SetNode(TrelloChildNode node,ND_NodeEditor nD_Node)
+        {   
+            visualNode = nD_Node;
             _targetNode = node;
             if (_targetNode != null)
             {
@@ -108,7 +114,7 @@ namespace ND_DrawTrello.Editor
                 UpdateWindowTitle();
             }
             EditorGUILayout.Space(5);
-
+            visualNode.UpdateNode();
 
             // --- Action Buttons Row ---
             EditorGUILayout.BeginHorizontal();
