@@ -14,6 +14,7 @@
         <ui:VisualElement name="card-content" class="trello-child-card-content">
             <!-- Left side: Toggle and Task Label -->
             <ui:VisualElement name="task-info" class="trello-child-task-info">
+                <ui:Label name="taskNameLabel" text="Default Task Name" class="trello-child-task-name-label" />
                 <uie:PropertyField name="isCompleteField" binding-path="isComplete" class="trello-child-iscomplete-field" label="" />
                 <uie:PropertyField name="taskField" binding-path="task" class="trello-child-task-field" label=""/>
             </ui:VisualElement>

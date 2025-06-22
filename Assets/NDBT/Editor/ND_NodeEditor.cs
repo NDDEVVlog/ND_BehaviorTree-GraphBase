@@ -22,6 +22,8 @@ namespace ND_DrawTrello.Editor
         public SerializedProperty m_serializedProperty;
         public SerializedObject m_SerializedObject;
 
+        public GraphView drawTrelloView;
+
         public Node node => m_treeNode;
 
         public List<Port> Ports => m_Ports;
@@ -30,7 +32,7 @@ namespace ND_DrawTrello.Editor
         private VisualElement m_BottomPortContainer;
         public VisualElement m_DragableNodeContainer; // This will be the target for dropped nodes
 
-        protected ND_NodeEditor(Node node, SerializedObject BTObject, string uxmlPath)
+        protected ND_NodeEditor(Node node, SerializedObject BTObject,GraphView graphView, string uxmlPath)
             : base(uxmlPath) // Pass the UXML path to the base GraphView.Node constructor
         {   
             VisualTreeAsset visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
@@ -50,8 +52,8 @@ namespace ND_DrawTrello.Editor
 
         // Public constructor for using the default UXML path.
         // It now calls the protected constructor using 'this(...)'.
-        public ND_NodeEditor(Node node, SerializedObject BTObject)
-            : this(node, BTObject, ND_DrawTrelloSetting.Instance.GetNodeDefaultUXMLPath())
+        public ND_NodeEditor(Node node, SerializedObject BTObject,GraphView graphView)
+            : this(node, BTObject,graphView, ND_DrawTrelloSetting.Instance.GetNodeDefaultUXMLPath())
         {
             m_treeNode = node;
             Type typeInfo = node.GetType();
@@ -214,8 +216,25 @@ namespace ND_DrawTrello.Editor
         }
 
         #region IDropTarget Implementation
+        public string GetDraggedItemTitle(IEnumerable<ISelectable> selection)
+        {
+            if (selection != null && selection.Any())
+            {
+                var firstSelectable = selection.First();
+                if (firstSelectable is ND_NodeEditor draggedNode)
+                {
+                    return $"'{draggedNode.title}' (Type: {draggedNode.GetType().Name})";
+                }
+                else if (firstSelectable is GraphElement ge)
+                {
+                    return $"'{ge.name ?? "Unnamed GE"}' (Type: {ge.GetType().Name})";
+                }
+                return $"(Type: {firstSelectable.GetType().Name})";
+            }
+            return "NOTHING";
+        }
 
-        public  bool CanAcceptDrop(List<ISelectable> selection)
+        public bool CanAcceptDrop(List<ISelectable> selection)
         {
             if (m_DragableNodeContainer == null) // Ensure the drop zone exists
             {
@@ -244,13 +263,21 @@ namespace ND_DrawTrello.Editor
 
         public virtual bool DragUpdated(DragUpdatedEvent evt, IEnumerable<ISelectable> selection, IDropTarget dropTarget, ISelection dragSource)
         {
+             string nodeTitle = (m_treeNode != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
+            string draggedItemInfo = GetDraggedItemTitle(selection);
+
+            if (dropTarget == this)
+            {
+                Debug.Log($"<color=blue>DragUpdated</color>: Dragging <b>{draggedItemInfo}</b> over Node: <b>'{nodeTitle}'</b>. CanAcceptDrop: {CanAcceptDrop(selection.ToList())}");
+            }
             return CanAcceptDrop(selection.ToList());
         }
 
         public virtual bool DragPerform(DragPerformEvent evt, IEnumerable<ISelectable> selection, IDropTarget dropTarget, ISelection dragSource)
         {
             if (m_DragableNodeContainer == null) return false;
-
+           
+            
             if (CanAcceptDrop(selection.ToList()))
             {
                 ND_NodeEditor droppedNodeEditor = selection.First() as ND_NodeEditor;
@@ -270,7 +297,7 @@ namespace ND_DrawTrello.Editor
                     droppedNodeEditor.style.top = StyleKeyword.Auto;
                     droppedNodeEditor.style.right = StyleKeyword.Auto;
                     droppedNodeEditor.style.bottom = StyleKeyword.Auto;
-                    droppedNodeEditor.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
+                    droppedNodeEditor.style.width = new StyleLength(new Length(80, LengthUnit.Percent));
                     // droppedNodeEditor.style.marginBottom = 5; // Optional: Add some spacing
 
                     // Optional: Notify the GraphView that an element's hierarchy changed if needed,
@@ -296,27 +323,44 @@ namespace ND_DrawTrello.Editor
 
         public  virtual bool DragEnter(DragEnterEvent evt, IEnumerable<ISelectable> selection, IDropTarget enteredTarget, ISelection dragSource)
         {
-            if (CanAcceptDrop(selection.ToList()))
+            string nodeTitle = (m_treeNode != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
+            if (enteredTarget == this) // Only log if this node is the one being entered
             {
-                this.AddToClassList("drag-over-target");
-                // Optionally, highlight the m_DragableNodeContainer itself
-                // m_DragableNodeContainer?.AddToClassList("drop-zone-highlight");
-                return true;
+                Debug.Log($"<color=green>DragEnter</color> Node: <b>'{nodeTitle}'</b>. CanAcceptDrop: {CanAcceptDrop(selection.ToList())}");
+                if (CanAcceptDrop(selection.ToList()))
+                {
+                    this.AddToClassList("drag-over-target");
+                    m_DragableNodeContainer?.AddToClassList("drop-zone-highlight"); // Highlight specific drop zone
+                    
+                    return true;
+                }
             }
             return false;
         }
 
         public virtual bool DragLeave(DragLeaveEvent evt, IEnumerable<ISelectable> selection, IDropTarget leftTarget, ISelection dragSource)
         {
-            this.RemoveFromClassList("drag-over-target");
-            // m_DragableNodeContainer?.RemoveFromClassList("drop-zone-highlight");
-            return true;
+              string nodeTitle = (m_treeNode != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
+              Debug.Log($"<color=orange>DragLeave</color> Node: <b>'{nodeTitle}'</b>.");
+            // leftTarget is the element the drag pointer is leaving.
+            if (leftTarget == this || this.Contains(leftTarget as VisualElement)) // Check if leaving this node or one of its children
+            {
+
+                this.RemoveFromClassList("drag-over-target");
+                m_DragableNodeContainer?.RemoveFromClassList("drop-zone-highlight");
+                //ND_NodeEditor droppedNodeEditor = selection.First() as ND_NodeEditor;
+                //m_DragableNodeContainer.Remove(droppedNodeEditor);
+            }
+            return true; // Usually true to allow event to propagate if needed
         }
 
         public virtual bool DragExited()
         {
+            string nodeTitle = (m_treeNode != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
+            Debug.Log($"<color=red>DragExited</color> (Custom) called on Node: <b>'{nodeTitle}'</b>. This is not a standard IDropTarget event for Nodes.");
             this.RemoveFromClassList("drag-over-target");
-            // m_DragableNodeContainer?.RemoveFromClassList("drop-zone-highlight");
+            // this.AddToClassList("appeared"); // Re-adding "appeared" might not be desired here, depends on your USS.
+            m_DragableNodeContainer?.RemoveFromClassList("drop-zone-highlight");
             return true;
         }
 

@@ -12,9 +12,11 @@ namespace ND_DrawTrello.Editor
         private VisualElement collapseEara;
         private Button m_AddChildButton;
         
-        public ND_TrelloNodeEditor(Node node, SerializedObject BTObject)
-            : base(node, BTObject, ND_DrawTrelloSetting.Instance.GetTrelloUXMLPath())
+        public ND_TrelloNodeEditor(Node node, SerializedObject BTObject,GraphView graphView)
+            : base(node, BTObject,graphView, ND_DrawTrelloSetting.Instance.GetTrelloUXMLPath())
         {
+            m_SerializedObject = BTObject;
+            drawTrelloView = graphView;
             this.AddToClassList("trello-main-node-editor");
 
 
@@ -68,10 +70,12 @@ namespace ND_DrawTrello.Editor
             Undo.RecordObject(m_SerializedObject.targetObject, "Add Trello Child Task");
 
             TrelloChildNode newChildData = new TrelloChildNode();
+            
             newChildData.SetNewID (System.Guid.NewGuid().ToString());
             newChildData.task = $"New Task {trelloNodeData.childrenNode.Count + 1}";
-            
             trelloNodeData.childrenNode.Add(newChildData);
+
+            
             
             EditorUtility.SetDirty(m_SerializedObject.targetObject);
             m_SerializedObject.ApplyModifiedProperties(); 
@@ -89,14 +93,20 @@ namespace ND_DrawTrello.Editor
                 return null;
             }
 
-            ND_TrelloChild childEditor = new ND_TrelloChild(childData, m_SerializedObject);
+            ND_TrelloChild childEditor = new ND_TrelloChild(childData, m_SerializedObject,drawTrelloView);
+
+            drawTrelloView.AddElement(childEditor);
+
+            childEditor.AddToClassList("appeared");
+            // this.GetFirstAncestorOfType<ND_DrawTrelloView>().AddElement(childEditor);
             m_DragableNodeContainer.Add(childEditor);
-            
+
             childEditor.style.position = Position.Relative;
             childEditor.style.left = StyleKeyword.Auto;
             childEditor.style.top = StyleKeyword.Auto;
-            childEditor.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
+            childEditor.style.width = new StyleLength(new Length(80, LengthUnit.Percent));
             childEditor.style.marginBottom = 2;
+            //childEditor.BringToFront(); 
 
             return childEditor;
         }
@@ -104,6 +114,16 @@ namespace ND_DrawTrello.Editor
         public override bool DragPerform(DragPerformEvent evt, System.Collections.Generic.IEnumerable<ISelectable> selection, IDropTarget dropTarget, ISelection dragSource)
         {
             if (m_DragableNodeContainer == null) return false;
+
+             string targetNodeTitle = (this.node != null && !string.IsNullOrEmpty(this.title)) ? this.title : "TRELLO_NODE_UNKNOWN (Target)";
+
+            string draggedItemInfo = GetDraggedItemTitle(selection); // Using local or base's GetDraggedItemTitle
+            string logPrefix = $"<color=purple>DragPerform (Trello '{targetNodeTitle}')</color> for item <b>{draggedItemInfo}</b>: ";
+
+            Debug.Log($"{logPrefix} Initiated.");
+
+
+
 
             var droppedNodeEditor = selection.FirstOrDefault() as ND_NodeEditor;
             if (droppedNodeEditor is ND_TrelloChild trelloChildEditor)
@@ -146,7 +166,7 @@ namespace ND_DrawTrello.Editor
                         trelloChildEditor.style.position = Position.Relative;
                         trelloChildEditor.style.left = StyleKeyword.Auto;
                         trelloChildEditor.style.top = StyleKeyword.Auto;
-                        trelloChildEditor.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
+                        trelloChildEditor.style.width = new StyleLength(new Length(80, LengthUnit.Percent));
                         trelloChildEditor.style.marginBottom = 2;
                     
                         evt.StopPropagation();

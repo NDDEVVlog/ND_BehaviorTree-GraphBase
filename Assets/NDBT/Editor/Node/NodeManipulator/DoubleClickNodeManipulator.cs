@@ -62,11 +62,17 @@ namespace ND_DrawTrello.Editor
             // Get the ScriptableObject Node instance that this visual editor represents
             Node nodeAsset = _nodeEditorVisual.node;
 
-            Debug.Log($"Node '{_nodeEditorVisual.title}' (Asset: {nodeAsset.name}, ID: {nodeAsset.id}) double-clicked. Selecting asset.");
-
-           
-            // Debug.Log($"Node '{_nodeEditorVisual.title}' (Asset: {nodeAssetToEdit.name}) double-clicked. Opening property window.");
-            NodePropertyEditorWindow.Open(nodeAsset);
+            // --- MODIFIED PART ---
+            if (nodeAsset is TrelloChildNode trelloChildAsset)
+            {
+                Debug.Log($"TrelloChildNode '{_nodeEditorVisual.title}' double-clicked. Opening Trello Card Editor.");
+                TrelloChildNodeEditorWindow.Open(trelloChildAsset); // Open specific window
+            }
+            else // Fallback for other node types
+            {
+                Debug.Log($"Node '{_nodeEditorVisual.title}' double-clicked. Opening generic Node Property Editor.");
+                NodePropertyEditorWindow.Open(nodeAsset); // Open generic window
+            }
         }
     }
 }

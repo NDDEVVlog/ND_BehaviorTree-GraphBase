@@ -11,8 +11,8 @@ namespace ND_DrawTrello.Editor
     {
         private Button m_editButton;
 
-        public ND_TrelloChild(ND_DrawTrello.Node node, SerializedObject BTObject)
-            : base(node, BTObject) // Base loads its shell UXML
+        public ND_TrelloChild(ND_DrawTrello.Node node, SerializedObject BTObject,GraphView graphView)
+            : base(node, BTObject,graphView) // Base loads its shell UXML
         {   
             // ND_NodeEditor's InitializeNodeView has run:
             // - m_SerializedObject is set.
