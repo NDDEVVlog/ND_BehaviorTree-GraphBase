@@ -85,6 +85,17 @@ namespace ND_DrawTrello.Editor
             CreateAndAddChildEditor(newChildData);
         }
 
+        public void LoadTrelloChildren()
+        {   
+            TrelloNode trelloNodeData = node as TrelloNode;
+            if (trelloNodeData == null) return;
+            foreach (TrelloChildNode e in trelloNodeData.childrenNode)
+            {
+                CreateAndAddChildEditor(e);
+                
+            }
+        }
+
         private ND_TrelloChild CreateAndAddChildEditor(TrelloChildNode childData)
         {
             if (m_DragableNodeContainer == null)
@@ -93,7 +104,7 @@ namespace ND_DrawTrello.Editor
                 return null;
             }
 
-            ND_TrelloChild childEditor = new ND_TrelloChild(childData, m_SerializedObject,drawTrelloView);
+            ND_TrelloChild childEditor = new ND_TrelloChild(childData, m_SerializedObject, drawTrelloView);
 
             drawTrelloView.AddElement(childEditor);
 
@@ -106,6 +117,7 @@ namespace ND_DrawTrello.Editor
             childEditor.style.top = StyleKeyword.Auto;
             childEditor.style.width = new StyleLength(new Length(80, LengthUnit.Percent));
             childEditor.style.marginBottom = 2;
+            childEditor.UpdateNode();
             //childEditor.BringToFront(); 
 
             return childEditor;

@@ -11,6 +11,7 @@ namespace ND_DrawTrello.Editor
     {
         private Button m_editButton;
         private Label m_taskNameLabel;
+        private Toggle isCompleteToggle;
         public ND_TrelloChild(ND_DrawTrello.Node node, SerializedObject BTObject, GraphView graphView)
             : base(node, BTObject, graphView) // Base loads its shell UXML
         {
@@ -36,7 +37,7 @@ namespace ND_DrawTrello.Editor
                 m_taskNameLabel = contentRoot.Q<Label>("taskNameLabel");
 
 
-                UpdateNodeName();
+
 
             }
             else
@@ -62,6 +63,24 @@ namespace ND_DrawTrello.Editor
             {
                 baseExtensionContainer.style.display = DisplayStyle.None;
             }
+            isCompleteToggle = this.Q<Toggle>("isCompleteToggle");
+
+            if (isCompleteToggle != null)
+            {
+
+
+
+
+                isCompleteToggle.RegisterValueChangedCallback(evt =>
+                {
+                    TrelloChildNode trelloNode = node as TrelloChildNode;
+                    trelloNode.isComplete = evt.newValue;
+                    Debug.Log($"ND_TrelloChild: isComplete changed to {evt.newValue}");
+                });
+
+
+
+            }
 
             // Query for the button *within the cloned content*
             m_editButton = this.mainContainer.Q<Button>("edit-task-button"); // Search within mainContainer
@@ -73,12 +92,18 @@ namespace ND_DrawTrello.Editor
             {
                 Debug.LogWarning($"ND_TrelloChild ({this.node?.id}): 'edit-task-button' not found in cloned UXML content.");
             }
+            
+            UpdateNodeName();
         }
 
         private void UpdateNodeName()
         {
             if (node is TrelloChildNode trelloChild)
+            {
                 m_taskNameLabel.text = trelloChild.task;
+                isCompleteToggle.value = trelloChild.isComplete;
+            }
+                
         }
 
         private void OnEditTaskClicked()
@@ -120,9 +145,12 @@ namespace ND_DrawTrello.Editor
             }
         }
 
+
+
         public override void UpdateNode()
         {
             Debug.Log("UpdateFromTrello");
+
             UpdateNodeName();
             base.UpdateNode();
         }

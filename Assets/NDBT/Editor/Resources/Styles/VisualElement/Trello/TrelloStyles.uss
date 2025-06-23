@@ -183,30 +183,52 @@
     flex-grow: 1;
 }
 
-.trello-child-node-view .trello-child-iscomplete-field {
-    margin-right: 8px; 
-    min-width: 16px; 
-    max-width: 16px;
+/* --- Styles for the Trello Child CARD (TrelloChildNodeView) --- */
+/* ... other styles for .trello-child-node-view ... */
+
+/* Styles for the new isCompleteToggle (Checkbox) */
+.trello-child-node-view .trello-child-iscomplete-toggle {
+    margin-right: 8px; /* Spacing between checkbox and task name/field */
+    /* The Toggle element itself will size to its content. We style the input part below. */
+    /* Ensure it aligns well with other elements in the row */
+    align-self: center;
 }
-.trello-child-node-view .trello-child-iscomplete-field > .unity-label {
+
+/* Hide the Toggle's internal label element if label="" is not enough or it takes space */
+.trello-child-node-view .trello-child-iscomplete-toggle > .unity-label {
     display: none;
+    min-width: 0; /* Ensure it doesn't reserve space */
+    margin: 0;
+    padding: 0;
 }
-.trello-child-node-view .trello-child-iscomplete-field .unity-toggle__input { 
+
+/* Style the actual checkbox input part */
+.trello-child-node-view .trello-child-iscomplete-toggle .unity-toggle__input {
     width: 16px;
     height: 16px;
-    margin: 0;
-    border-radius: 8px; 
-    background-color: transparent;
-    border-width: 1.5px; /* Thinner border for child toggle */
-    border-color: rgb(110, 110, 110);
+    margin: 0; /* Important to prevent extra space around the box */
+    border-radius: 3px; /* Square with slightly rounded corners. Use 0px for sharp square. */
+    background-color: rgb(55, 58, 63); /* Background for the unchecked box */
+    border-width: 1.5px;
+    border-color: rgb(110, 110, 110); /* Border color for unchecked box */
 }
-.trello-child-node-view .trello-child-iscomplete-field .unity-toggle--on .unity-toggle__input { 
-    background-color: rgb(90, 130, 225); 
-    border-color: rgb(90, 130, 225);
+
+/* Style for when the checkbox is checked (on state) */
+.trello-child-node-view .trello-child-iscomplete-toggle.unity-toggle--on .unity-toggle__input {
+    background-color: rgb(90, 130, 225); /* Blue background when checked */
+    border-color: rgb(90, 130, 225); /* Blue border when checked */
 }
-.trello-child-node-view .trello-child-iscomplete-field .unity-toggle--on .unity-toggle__checkmark {
-    background-image: none; 
+
+/* Style for the checkmark itself */
+.trello-child-node-view .trello-child-iscomplete-toggle.unity-toggle--on .unity-toggle__checkmark {
+    /* This uses Unity's default checkmark icon and tints it white. */
+    /* If you have a custom checkmark, you might use background-image here. */
+    -unity-background-image-tint-color: white;
+    /* Ensure no other background might be interfering if default checkmark doesn't show */
+    /* background-image: none; */ /* Typically not needed if just tinting default */
 }
+
+/* ... other styles for .trello-child-node-view ... */
 
 .trello-child-node-view .trello-child-task-field {
     flex-grow: 1; 
