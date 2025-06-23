@@ -147,8 +147,8 @@ namespace ND_DrawTrello.Editor
             // Instantiate a NEW instance of the node data type.
             // searchElement.target was a prototype instance used for type info.
             Type nodeDataType = searchElement.target.GetType();
-            ND_DrawTrello.Node nodeData = (ND_DrawTrello.Node)Activator.CreateInstance(nodeDataType); 
-
+            Node nodeData = (ND_DrawTrello.Node)ScriptableObject.CreateInstance(nodeDataType); 
+            
             // Set its initial position (and a default size)
             // Use a default size, e.g., 150x100
             nodeData.SetPosition(new Rect(graphMousePosition, new Vector2(150, 100)));

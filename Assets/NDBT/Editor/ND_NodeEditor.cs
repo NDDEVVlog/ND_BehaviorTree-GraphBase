@@ -350,6 +350,7 @@ namespace ND_DrawTrello.Editor
                 this.RemoveFromClassList("drag-over-target");
                 m_DragableNodeContainer?.RemoveFromClassList("drop-zone-highlight");
                 ND_NodeEditor droppedNodeEditor = selection.First() as ND_NodeEditor;
+                
                 m_DragableNodeContainer.Remove(droppedNodeEditor);
                 this.GetFirstAncestorOfType<ND_DrawTrelloView>().AddElement(droppedNodeEditor);
 

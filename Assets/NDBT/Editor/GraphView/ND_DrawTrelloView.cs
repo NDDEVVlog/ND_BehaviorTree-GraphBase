@@ -119,13 +119,16 @@ namespace ND_DrawTrello.Editor
                 return;
             }
 
+            
             Undo.RecordObject(m_serialLizeObject.targetObject, "Added Node: " + nodeData.GetType().Name);
+            AssetDatabase.AddObjectToAsset(nodeData, m_BTree);
             m_BTree.nodes.Add(nodeData); // Add to the underlying ScriptableObject data
 
             AddNodeVisuals(nodeData, animate: true); // Add visual representation with animation
             
             BindSerializedObject(); // Re-bind to reflect new data for property fields
             EditorUtility.SetDirty(m_BTree); // Mark the ScriptableObject as changed
+            AssetDatabase.SaveAssets();
             if (m_editorWindow != null) m_editorWindow.SetUnsavedChanges(true);
             // Debug.Log($"[AddNewNodeFromSearch] Added new node: {nodeData.id} of type {nodeData.GetType().Name}");
         }
@@ -185,12 +188,13 @@ namespace ND_DrawTrello.Editor
         /// <summary>
         /// Adds the visual representation of a node to the graph.
         /// </summary>
-        private void AddNodeVisuals(Node nodeData, bool animate = false)
+        private void AddNodeVisuals(Node nodeData, bool animate = true)
         {
             if (nodeData == null) { Debug.LogError("[AddNodeVisuals] nodeData is null."); return; }
             if (string.IsNullOrEmpty(nodeData.typeName)) nodeData.typeName = nodeData.GetType().AssemblyQualifiedName; // Ensure typeName for deserialization if needed
-            
-            if (NodeDictionary.ContainsKey(nodeData.id)) {
+
+            if (NodeDictionary.ContainsKey(nodeData.id))
+            {
                 Debug.LogWarning($"[AddNodeVisuals] Node editor for ID '{nodeData.id}' already exists. Skipping visual add.");
                 return;
             }
@@ -203,26 +207,23 @@ namespace ND_DrawTrello.Editor
             {
                 // If you have ND_DrawTrelloSetting.Instance.GetTrelloUXMLPath()
                 // ensure it's used by ND_TrelloNodeEditor's constructor
-                nodeEditor = new ND_TrelloNodeEditor(trelloNodeData, m_serialLizeObject,this);
+                nodeEditor = new ND_TrelloNodeEditor(trelloNodeData, m_serialLizeObject, this);
                 Debug.Log($"Creating ND_TrelloNodeEditor for node: {nodeData.id}");
             }
             // Add more 'else if' blocks here for other specific node editor types
-            else if (nodeData is TrelloChildNode myOtherData)
+            else if (nodeData is TrelloChildNode trelloChild)
             {
-                nodeEditor = new ND_TrelloChild(myOtherData, m_serialLizeObject,this);
+                
+                nodeEditor = new ND_TrelloChild(trelloChild, m_serialLizeObject, this);
             }
             else // Default case: use the generic ND_NodeEditor
             {
                 // This uses the default UXML path defined in ND_NodeEditor's constructor
-                nodeEditor = new ND_NodeEditor(nodeData, m_serialLizeObject,this);
+                nodeEditor = new ND_NodeEditor(nodeData, m_serialLizeObject, this);
                 Debug.Log($"Creating generic ND_NodeEditor for node: {nodeData.id} of type {nodeData.GetType()}");
             }
-            
 
-            nodeEditor.SetPosition(nodeData.position); // Set visual position from data
-            TreeNodes.Add(nodeEditor); // Add to local list of editor nodes
-            NodeDictionary.Add(nodeData.id, nodeEditor); // Add to lookup dictionary for quick access
-            AddElement(nodeEditor); // Add to GraphView's visual element hierarchy
+            AddNode(nodeData, nodeEditor);
 
             if (animate)
             {
@@ -236,14 +237,20 @@ namespace ND_DrawTrello.Editor
             }
         }
 
+
         private void DrawNodesFromData()
         {
             // Debug.Log($"[DrawNodesFromData] Attempting to draw {m_BTree.nodes.Count} nodes from data.");
             foreach (Node nodeData in m_BTree.nodes)
             {
-                if (nodeData == null) {
+                if (nodeData == null)
+                {
                     Debug.LogWarning("[DrawNodesFromData] Encountered a null Node instance in m_BTree.nodes list.");
                     continue;
+                }
+                else
+                {
+                    Debug.Log($"<color=green>DragEnter</color> Node: <b>'{nodeData.GetType().ToString()}'</b>.");
                 }
                 AddNodeVisuals(nodeData, animate: false); // No animation on initial load
             }

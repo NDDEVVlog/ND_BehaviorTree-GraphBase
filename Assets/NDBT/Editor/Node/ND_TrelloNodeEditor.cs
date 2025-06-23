@@ -69,8 +69,9 @@ namespace ND_DrawTrello.Editor
             
             Undo.RecordObject(m_SerializedObject.targetObject, "Add Trello Child Task");
 
-            TrelloChildNode newChildData = new TrelloChildNode();
-            
+            TrelloChildNode newChildData = ScriptableObject.CreateInstance<TrelloChildNode>();
+            AssetDatabase.AddObjectToAsset(newChildData,node);
+
             newChildData.SetNewID (System.Guid.NewGuid().ToString());
             newChildData.task = $"New Task {trelloNodeData.childrenNode.Count + 1}";
             trelloNodeData.childrenNode.Add(newChildData);
@@ -80,7 +81,7 @@ namespace ND_DrawTrello.Editor
             EditorUtility.SetDirty(m_SerializedObject.targetObject);
             m_SerializedObject.ApplyModifiedProperties(); 
             m_SerializedObject.Update();
-
+            AssetDatabase.SaveAssets();
 
             CreateAndAddChildEditor(newChildData);
         }
@@ -174,6 +175,9 @@ namespace ND_DrawTrello.Editor
 
                         trelloChildEditor.RemoveFromHierarchy();
                         m_DragableNodeContainer.Add(trelloChildEditor);
+
+                        this.GetFirstAncestorOfType<ND_DrawTrelloView>().RemoveNodeDataOutOfGraph(trelloChildEditor);
+
 
                         trelloChildEditor.style.position = Position.Relative;
                         trelloChildEditor.style.left = StyleKeyword.Auto;

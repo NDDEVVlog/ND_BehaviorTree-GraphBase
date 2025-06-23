@@ -1,4 +1,5 @@
 // File: Assets/NDBT/Editor/NodeEditors/ND_TrelloChild.cs
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements; // For PropertyField if you query it
@@ -92,8 +93,9 @@ namespace ND_DrawTrello.Editor
             {
                 Debug.LogWarning($"ND_TrelloChild ({this.node?.id}): 'edit-task-button' not found in cloned UXML content.");
             }
-            
+
             UpdateNodeName();
+            RefreshExpandedState();
         }
 
         private void UpdateNodeName()
@@ -103,7 +105,7 @@ namespace ND_DrawTrello.Editor
                 m_taskNameLabel.text = trelloChild.task;
                 isCompleteToggle.value = trelloChild.isComplete;
             }
-                
+
         }
 
         private void OnEditTaskClicked()
@@ -153,6 +155,11 @@ namespace ND_DrawTrello.Editor
 
             UpdateNodeName();
             base.UpdateNode();
+        }
+
+        public override bool DragPerform(DragPerformEvent evt, IEnumerable<ISelectable> selection, IDropTarget dropTarget, ISelection dragSource)
+        {
+            return false;
         }
     }
 }

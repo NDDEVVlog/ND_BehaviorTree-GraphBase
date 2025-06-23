@@ -1,5 +1,29 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5656339406266305215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 297a1022507eca049aa55779eaf713bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_guid: 4a02c893-c812-444a-a092-6b3ac9c44fdd
+  m_position:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  typeName: 
+  task: WOW
+  isComplete: 1
+  Description: 
+  checkBoxes: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12,4 +36,105 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e30e10dae0a048499a4cc3b0964bcbf, type: 3}
   m_Name: New Draw Trello
   m_EditorClassIdentifier: 
+  m_nodes:
+  - {fileID: 4829769805574605254}
+  - {fileID: 3484152404671915136}
   m_connection: []
+--- !u!114 &2069191355625248595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 297a1022507eca049aa55779eaf713bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_guid: b87c1c1b-7d56-4e37-ae91-2d6aab23789d
+  m_position:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  typeName: 
+  task: SORA
+  isComplete: 0
+  Description: 
+  checkBoxes: []
+--- !u!114 &3208936689935956011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 297a1022507eca049aa55779eaf713bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_guid: 5d35261f-68b0-4120-ab7d-7a769cb9cb32
+  m_position:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  typeName: 
+  task: ND
+  isComplete: 1
+  Description: 
+  checkBoxes: []
+--- !u!114 &3484152404671915136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efaa9658960fa28479c59b880f22669c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_guid: 007ffa0c-c152-4f11-838c-01d9c706b9d0
+  m_position:
+    serializedVersion: 2
+    x: 319.2
+    y: 127.2
+    width: 237.59998
+    height: 345.6
+  typeName: ND_DrawTrello.TrelloNode, ND_DrawTrello.Runtime, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  childrenNode:
+  - {fileID: -5656339406266305215}
+  - {fileID: 2069191355625248595}
+  - {fileID: 3208936689935956011}
+--- !u!114 &4829769805574605254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 297a1022507eca049aa55779eaf713bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_guid: 8ca0cc46-9886-46c3-8367-7ddb5a9d32d0
+  m_position:
+    serializedVersion: 2
+    x: 597.6
+    y: 272.8
+    width: 106.400024
+    height: 32
+  typeName: ND_DrawTrello.TrelloChildNode, ND_DrawTrello.Runtime, Version=0.0.0.0,
+    Culture=neutral, PublicKeyToken=null
+  task: NEWTASK
+  isComplete: 1
+  Description: 
+  checkBoxes: []
