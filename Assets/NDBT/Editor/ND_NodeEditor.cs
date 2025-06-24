@@ -15,7 +15,7 @@ namespace ND_DrawTrello.Editor
 {
     public class ND_NodeEditor : NodeElements, IDropTarget
     {
-        private Node m_treeNode;
+        internal Node m_Node;
         private Port m_OutputPort;
 
         private List<Port> m_Ports;
@@ -24,12 +24,14 @@ namespace ND_DrawTrello.Editor
 
         public GraphView drawTrelloView;
 
-        public Node node => m_treeNode;
+        public Node node => m_Node;
 
         public List<Port> Ports => m_Ports;
 
         private VisualElement m_TopPortContainer;
         private VisualElement m_BottomPortContainer;
+        private VisualElement m_LeftPortContainer;
+        private VisualElement m_RightPortContainer;
         public VisualElement m_DragableNodeContainer; // This will be the target for dropped nodes
 
         protected ND_NodeEditor(Node node, SerializedObject BTObject, GraphView graphView, string uxmlPath)
@@ -55,7 +57,7 @@ namespace ND_DrawTrello.Editor
         public ND_NodeEditor(Node node, SerializedObject BTObject, GraphView graphView)
             : this(node, BTObject, graphView, ND_DrawTrelloSetting.Instance.GetNodeDefaultUXMLPath())
         {
-            m_treeNode = node;
+            m_Node = node;
             Type typeInfo = node.GetType();
             NodeInfoAttribute info = typeInfo.GetCustomAttribute<NodeInfoAttribute>();
             title = info.title;
@@ -80,10 +82,12 @@ namespace ND_DrawTrello.Editor
             this.AddToClassList("nd-node");
 
             m_SerializedObject = BTObject;
-            m_treeNode = node;
+            m_Node = node;
 
             m_TopPortContainer = this.Q<VisualElement>("top-port");
             m_BottomPortContainer = this.Q<VisualElement>("bottom-port");
+            m_LeftPortContainer = this.Q<VisualElement>("left-port");
+            m_RightPortContainer = this.Q<VisualElement>("right-port");
 
             // Query for the specific container where nodes can be dropped
             // This targets the *first* element named "draggable-nodes-container" in your UXML.
@@ -113,6 +117,20 @@ namespace ND_DrawTrello.Editor
             {
                 CreateInputPort();
             }
+
+            if (m_LeftPortContainer != null)
+            {
+                Port leftPort = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, typeof(PortType.FlowPort));
+                leftPort.portName = "";
+                m_LeftPortContainer.Add(leftPort);
+            }
+            if (m_RightPortContainer != null)
+            {
+                Port rightPort = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(PortType.FlowPort));
+                rightPort.portName = "";
+                m_RightPortContainer.Add(rightPort);
+            }
+
 
             foreach (FieldInfo property in typeInfo.GetFields())
             {
@@ -213,7 +231,7 @@ namespace ND_DrawTrello.Editor
 
         public void SavePosition()
         {
-            m_treeNode.SetPosition(GetPosition());
+            m_Node.SetPosition(GetPosition());
         }
 
         #region IDropTarget Implementation
@@ -264,7 +282,7 @@ namespace ND_DrawTrello.Editor
 
         public virtual bool DragUpdated(DragUpdatedEvent evt, IEnumerable<ISelectable> selection, IDropTarget dropTarget, ISelection dragSource)
         {
-            string nodeTitle = (m_treeNode != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
+            string nodeTitle = (m_Node != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
             string draggedItemInfo = GetDraggedItemTitle(selection);
 
             if (dropTarget == this)
@@ -324,7 +342,7 @@ namespace ND_DrawTrello.Editor
 
         public virtual bool DragEnter(DragEnterEvent evt, IEnumerable<ISelectable> selection, IDropTarget enteredTarget, ISelection dragSource)
         {
-            string nodeTitle = (m_treeNode != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
+            string nodeTitle = (m_Node != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
             if (enteredTarget == this) // Only log if this node is the one being entered
             {
                 Debug.Log($"<color=green>DragEnter</color> Node: <b>'{nodeTitle}'</b>. CanAcceptDrop: {CanAcceptDrop(selection.ToList())}");
@@ -341,7 +359,7 @@ namespace ND_DrawTrello.Editor
 
         public virtual bool DragLeave(DragLeaveEvent evt, IEnumerable<ISelectable> selection, IDropTarget leftTarget, ISelection dragSource)
         {
-            string nodeTitle = (m_treeNode != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
+            string nodeTitle = (m_Node != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
             Debug.Log($"<color=orange>DragLeave</color> Node: <b>'{nodeTitle}'</b>.");
             // leftTarget is the element the drag pointer is leaving.
             if (leftTarget == this || this.Contains(leftTarget as VisualElement)) // Check if leaving this node or one of its children
@@ -361,7 +379,7 @@ namespace ND_DrawTrello.Editor
 
         public virtual bool DragExited()
         {
-            string nodeTitle = (m_treeNode != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
+            string nodeTitle = (m_Node != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
             Debug.Log($"<color=red>DragExited</color> (Custom) called on Node: <b>'{nodeTitle}'</b>. This is not a standard IDropTarget event for Nodes.");
             this.RemoveFromClassList("drag-over-target");
             // this.AddToClassList("appeared"); // Re-adding "appeared" might not be desired here, depends on your USS.

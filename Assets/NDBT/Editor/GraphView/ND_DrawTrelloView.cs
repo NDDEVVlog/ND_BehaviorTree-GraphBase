@@ -141,7 +141,7 @@ namespace ND_DrawTrello.Editor
             if (elements == null || !elements.Any()) return;
 
             List<ND_NodeEditor> nodesToAnimateAndRemove = elements.OfType<ND_NodeEditor>().ToList();
-            List<Edge> edgesToRemove = elements.OfType<Edge>().ToList();
+            List<ND_CustomEdge> edgesToRemove = elements.OfType<ND_CustomEdge>().ToList();
 
             Undo.RecordObject(m_serialLizeObject.targetObject, "Delete Animated Elements");
 
@@ -268,25 +268,39 @@ namespace ND_DrawTrello.Editor
 
         private void MakeConnectionVisualsOnly(ND_BTConnection connectionData)
         {
-            ND_NodeEditor inputEditorNode = GetEditorNode(connectionData.inputPort.nodeID);
-            ND_NodeEditor outputEditorNode = GetEditorNode(connectionData.outputPort.nodeID);
+            ND_NodeEditor inNodeEd = GetEditorNode(connectionData.inputPort.nodeID);
+            ND_NodeEditor outNodeEd = GetEditorNode(connectionData.outputPort.nodeID);
 
-            if (inputEditorNode == null || outputEditorNode == null) {
-                // Debug.LogWarning($"[MakeConnectionVisualsOnly] Could not find one or both node editors for connection. Input: {connectionData.inputPort.nodeID}, Output: {connectionData.outputPort.nodeID}");
-                return;
-            }
-            if (connectionData.inputPort.portIndex >= inputEditorNode.Ports.Count || connectionData.outputPort.portIndex >= outputEditorNode.Ports.Count ||
-                connectionData.inputPort.portIndex < 0 || connectionData.outputPort.portIndex < 0) { // Added negative check
-                // Debug.LogWarning($"[MakeConnectionVisualsOnly] Port index out of bounds for connection. Input: {connectionData.inputPort.nodeID}[{connectionData.inputPort.portIndex}] (max {inputEditorNode.Ports.Count-1}), Output: {connectionData.outputPort.nodeID}[{connectionData.outputPort.portIndex}] (max {outputEditorNode.Ports.Count-1})");
-                return;
-            }
+            if (inNodeEd == null || outNodeEd == null ||
+                connectionData.inputPort.portIndex >= inNodeEd.Ports.Count || connectionData.outputPort.portIndex >= outNodeEd.Ports.Count ||
+                connectionData.inputPort.portIndex < 0 || connectionData.outputPort.portIndex < 0) return;
 
-            Port inPort = inputEditorNode.Ports[connectionData.inputPort.portIndex];
-            Port outPort = outputEditorNode.Ports[connectionData.outputPort.portIndex];
+            // Correctly declare inPort and outPort here
+            Port localInPort = inNodeEd.Ports[connectionData.inputPort.portIndex];
+            Port localOutPort = outNodeEd.Ports[connectionData.outputPort.portIndex];
             
-            Edge edge = inPort.ConnectTo(outPort);
+            // Create the edge first
+            ND_CustomEdge edge = new ND_CustomEdge
+            {
+                // Assign output and input AFTER creation or ensure constructor handles it
+                // output = localOutPort, // Set below
+                // input = localInPort,   // Set below
+                userData = connectionData
+            };
+            
+            // Now assign the ports
+            edge.output = localOutPort;
+            edge.input = localInPort;
+
+            if (!string.IsNullOrEmpty(connectionData.edgeText)) edge.Text = connectionData.edgeText;
+
+            // Connect the ports to the edge
+            edge.input.Connect(edge); 
+            edge.output.Connect(edge);
+            
             AddElement(edge);
-            ConnectionDictionary.Add(edge, connectionData); // Track visual edge to data
+            ConnectionDictionary.Add(edge, connectionData);
+            //edge.UpdateLabelPosition();
         }
         
         private void CreateDataForEdge(Edge edge)

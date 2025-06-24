@@ -24,8 +24,12 @@ namespace ND_DrawTrello.Editor
         {
             nodeEditor.SetPosition(nodeData.position); // Set visual position from data
             TreeNodes.Add(nodeEditor); // Add to local list of editor nodes
+
             NodeDictionary.Add(nodeData.id, nodeEditor); // Add to lookup dictionary for quick access
             AddElement(nodeEditor); // Add to GraphView's visual element hierarchy
+            
+            if (!m_BTree.nodes.Contains(nodeData))
+                m_BTree.nodes.Add(nodeData);
         }
 
     }

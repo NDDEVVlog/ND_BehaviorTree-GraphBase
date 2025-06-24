@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
+using PlasticGui;
+using System.Collections.Generic;
 
 namespace ND_DrawTrello.Editor
 {
@@ -135,62 +137,110 @@ namespace ND_DrawTrello.Editor
 
             Debug.Log($"{logPrefix} Initiated.");
 
-
-
-
             var droppedNodeEditor = selection.FirstOrDefault() as ND_NodeEditor;
             if (droppedNodeEditor is ND_TrelloChild trelloChildEditor)
             {
                 if (CanAcceptDrop(selection.ToList())) 
                 {
                     var childData = trelloChildEditor.node as TrelloChildNode;
+                    
                     TrelloNode trelloNodeData = this.node as TrelloNode;
+
+                    // Check if child is contained in List
+
+
 
                     if (childData != null && trelloNodeData != null)
                     {
                         var oldParentVisual = trelloChildEditor.parent;
                         ND_TrelloNodeEditor oldParentEditor = null;
-                        if(oldParentVisual is VisualElement ve) { // Check if parent is part of another TrelloNode
+                        if (oldParentVisual is VisualElement ve)
+                        { // Check if parent is part of another TrelloNode
                             var parentNodeEditorCandidate = ve.GetFirstAncestorOfType<ND_TrelloNodeEditor>();
-                            if(parentNodeEditorCandidate != null && parentNodeEditorCandidate != this) {
+                            if (parentNodeEditorCandidate != null && parentNodeEditorCandidate != this)
+                            {
                                 oldParentEditor = parentNodeEditorCandidate;
                             }
                         }
 
                         Undo.RecordObject(m_SerializedObject.targetObject, "Move Trello Child Task");
 
-                        if(oldParentEditor != null) {
+                        if (oldParentEditor != null)
+                        {
                             TrelloNode oldTrelloParentData = oldParentEditor.node as TrelloNode;
                             oldTrelloParentData?.childrenNode.Remove(childData);
                         }
-                        
+
                         if (!trelloNodeData.childrenNode.Contains(childData))
                         {
                             trelloNodeData.childrenNode.Add(childData);
+                            EditorUtility.SetDirty(m_SerializedObject.targetObject);
+                            m_SerializedObject.ApplyModifiedProperties();
+                            m_SerializedObject.Update();
+
+                            trelloChildEditor.RemoveFromHierarchy();
+                            m_DragableNodeContainer.Add(trelloChildEditor);
+
+                            this.GetFirstAncestorOfType<ND_DrawTrelloView>().RemoveNodeDataOutOfGraph(trelloChildEditor);
+
+
+                            trelloChildEditor.style.position = Position.Relative;
+                            trelloChildEditor.style.left = StyleKeyword.Auto;
+                            trelloChildEditor.style.top = StyleKeyword.Auto;
+                            trelloChildEditor.style.width = new StyleLength(new Length(80, LengthUnit.Percent));
+                            trelloChildEditor.style.marginBottom = 2;
+                            evt.StopPropagation();
+                            return true;
                         }
-                        
-                        EditorUtility.SetDirty(m_SerializedObject.targetObject);
-                        m_SerializedObject.ApplyModifiedProperties();
-                        m_SerializedObject.Update();
-
-                        trelloChildEditor.RemoveFromHierarchy();
-                        m_DragableNodeContainer.Add(trelloChildEditor);
-
-                        this.GetFirstAncestorOfType<ND_DrawTrelloView>().RemoveNodeDataOutOfGraph(trelloChildEditor);
-
-
-                        trelloChildEditor.style.position = Position.Relative;
-                        trelloChildEditor.style.left = StyleKeyword.Auto;
-                        trelloChildEditor.style.top = StyleKeyword.Auto;
-                        trelloChildEditor.style.width = new StyleLength(new Length(80, LengthUnit.Percent));
-                        trelloChildEditor.style.marginBottom = 2;
-                    
-                        evt.StopPropagation();
-                        return true;
+                        else
+                        {
+                            return false;
+                        }
+                  
                     }
                 }
             }
             return base.DragPerform(evt, selection, dropTarget, dragSource);
+        }
+
+        public override bool DragLeave(DragLeaveEvent evt, IEnumerable<ISelectable> selection, IDropTarget leftTarget, ISelection dragSource)
+        {
+            string nodeTitle = (m_Node != null && !string.IsNullOrEmpty(this.title)) ? this.title : "UNKNOWN_NODE";
+            Debug.Log($"<color=orange>DragLeave</color> Node: <b>'{nodeTitle}'</b>.");
+            // leftTarget is the element the drag pointer is leaving.
+            if (leftTarget == this || this.Contains(leftTarget as VisualElement)) // Check if leaving this node or one of its children
+            {
+
+                this.RemoveFromClassList("drag-over-target");
+                m_DragableNodeContainer?.RemoveFromClassList("drop-zone-highlight");
+
+                var droppedNodeEditor = selection.FirstOrDefault() as ND_NodeEditor;
+
+                if (droppedNodeEditor is ND_TrelloChild trelloChildEditor)
+                {
+
+                    var childData = trelloChildEditor.node as TrelloChildNode;
+                    
+                    TrelloNode trelloNodeData = this.node as TrelloNode;
+
+
+                    if (trelloNodeData.childrenNode.Contains(childData))
+                    {
+                        trelloNodeData.childrenNode.Remove(childData);
+                        this.GetFirstAncestorOfType<ND_DrawTrelloView>().AddNode(childData, droppedNodeEditor);
+                        trelloChildEditor.style.position = Position.Relative;
+                        trelloChildEditor.style.left = StyleKeyword.None;
+                        trelloChildEditor.style.top = StyleKeyword.None;
+                        trelloChildEditor.style.width = new StyleLength(new Length(150, LengthUnit.Pixel));
+                        return true;
+                    }
+
+                    //m_DragableNodeContainer.Remove(droppedNodeEditor);
+                    
+                }
+
+            }
+            return true; // Usually true to allow event to propagate if needed
         }
 
         public void RemoveChildTaskData(TrelloChildNode childDataToRemove)

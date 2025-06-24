@@ -1,31 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace ND_DrawTrello
-{   
+{
     [NodeInfo("TrelloChild", "Trello/TrelloChild")]
     public class TrelloChildNode : Node
-    {   
+    {
         [System.Serializable]
         public struct CheckBox
-        {   
+        {
             [Multiline]
             public string text;
-            public bool isChecked   ;
+            public bool isChecked;
+        }
+
+        [System.Serializable]
+        public struct ScriptRef
+        {
+            public MonoScript targetScript;
+            public int line;
         }
         public string task;
         public bool isComplete = false;
         public string Description;
-         [SerializeField]   
+        [SerializeField]
         public List<CheckBox> checkBoxes = new List<CheckBox>();
-        // private void OnValidate()
-        // {
-        //     if (!string.IsNullOrEmpty(task) && (string.IsNullOrEmpty(name) || name != task))
-        //     {
-        //         name = task; // Set the SO asset name from the task field
-        //     }
-        // }
+
+        [SerializeField]
+        public List<ScriptRef> scriptRefs = new List<ScriptRef>();
+        
 
     }
 }
