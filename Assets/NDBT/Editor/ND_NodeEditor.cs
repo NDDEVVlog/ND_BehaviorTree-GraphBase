@@ -141,6 +141,7 @@ namespace ND_DrawTrello.Editor
                 }
             }
             this.AddManipulator(new DoubleClickNodeManipulator(this));
+            this.AddManipulator(new CreateDecorator());
             RefreshExpandedState();
             RefreshPorts();
         }
