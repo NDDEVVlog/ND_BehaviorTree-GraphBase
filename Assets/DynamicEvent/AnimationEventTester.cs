@@ -8,6 +8,13 @@ public struct DamageInfo
     public string elementType;
     public bool isCriticalHit;
 }
+[System.Serializable]
+public struct MeMayBeoVL
+{
+    public DamageInfo damageInfo;
+    public Color color;
+    public Transform quantrongchogi;
+}
 
 // This is the main testing script.
 public class AnimationEventTester : MonoBehaviour
@@ -43,6 +50,11 @@ public class AnimationEventTester : MonoBehaviour
         Debug.Log($"<color=yellow>EVENT TRIGGERED: ConsumePower</color> -> Power consumed this frame: {powerConsumed}. Current Power Level was {currentPowerLevel}.");
     }
 
+    public void TestMeMayBeo(MeMayBeoVL meMayBeoVL)
+    {
+        Debug.Log($"<color=purple>EVENT TRIGGERED: ConsumePower</color> -> Color this frame: {meMayBeoVL.color}. Current Power Level was {meMayBeoVL.damageInfo.damageAmount}.");
+    }
+
     // Helper function to show how to call the struct-based event from code
     public void TriggerStructTest()
     {
@@ -75,7 +87,6 @@ public class AnimationEventTester : MonoBehaviour
         var parameter = new GenericParameter<DamageInfo>
         {
             parameterName = "info",
-            useConstant = true,
             constantValue = damageData
         };
 

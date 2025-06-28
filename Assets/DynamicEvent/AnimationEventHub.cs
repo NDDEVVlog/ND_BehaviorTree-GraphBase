@@ -1,36 +1,61 @@
-using System.Collections;
+// --- START OF FILE AnimationEventHub.cs (Corrected) ---
+
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEngine;
 
-public class AnimationEventHub : MonoBehaviour
+// Your MonoBehaviour MUST inherit from SerializedMonoBehaviour for Odin to take full control.
+public class AnimationEventHub : SerializedMonoBehaviour
 {
     public string eventToAction;
 
-    [SerializeField]
+    [ShowInInspector]
+    [OdinSerialize]
+    // --- FIX: Replaced obsolete 'Expanded' with 'DefaultExpandedState' ---
+    [ListDrawerSettings(DefaultExpandedState = true, DraggableItems = false, CustomAddFunction = "CreateNewDynamicEvent")]
+    [PropertyOrder(10)] // Puts it at the bottom
     private List<DynamicEvent> dynamicEvents = new List<DynamicEvent>();
 
-    //Function to Invoke function in dynamic Events
+    // A helper function for the '+' button on the list
+    private void CreateNewDynamicEvent()
+    {
+        dynamicEvents.Add(new DynamicEvent());
+    }
 
+    [Button]
     public void TriggerEvent(string eventName)
     {
-        // Find the event in our list that matches the provided name.
         DynamicEvent eventToTrigger = dynamicEvents.FirstOrDefault(e => e.eventName == eventName);
 
         if (eventToTrigger != null)
         {
-            // If we found a matching event, tell it to invoke its target method.
             eventToTrigger.Invoke();
         }
         else
         {
-            // If no event with that name is found, log a warning for easier debugging.
             Debug.LogWarning($"AnimationEventHub: Event with name '{eventName}' not found on {gameObject.name}.", this);
         }
     }
+    
+    public void SetParameterValue<T>(string eventName, string parameterName, T value)
+    {
+        DynamicEvent eventToUpdate = dynamicEvents.FirstOrDefault(e => e.eventName == eventName);
+
+        if (eventToUpdate != null)
+        {
+            eventToUpdate.SetParameterValue(parameterName, value);
+        }
+        else
+        {
+            Debug.LogWarning($"AnimationEventHub: Could not set parameter '{parameterName}' because event '{eventName}' was not found on {gameObject.name}.", this);
+        }
+    }
+
 
     public void OnValidate()
     {
-        TriggerEvent(eventToAction);
+        //TriggerEvent(eventToAction);
     }
 }
