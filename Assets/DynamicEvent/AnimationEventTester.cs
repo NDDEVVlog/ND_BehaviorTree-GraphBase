@@ -30,7 +30,7 @@ public class AnimationEventTester : MonoBehaviour
     }
 
     // 2. A function with a float and an int parameter
-    public void ExecuteAttack(float baseDamage, int comboMultiplier)
+    public void ExecuteAttack(float baseDamage, int comboMultiplier,Color color)
     {
         float totalDamage = baseDamage * comboMultiplier;
         Debug.Log($"<color=orange>EVENT TRIGGERED: ExecuteAttack</color> -> Base Damage: {baseDamage}, Multiplier: {comboMultiplier}. Total Damage: {totalDamage}");

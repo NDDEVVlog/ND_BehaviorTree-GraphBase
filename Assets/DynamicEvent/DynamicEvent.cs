@@ -138,11 +138,22 @@ public class DynamicEvent
     }
 
     private bool IsTypeSupported(Type type)
-    {
-        if (type.IsByRef) return false;
-        if (type.IsPrimitive || type == typeof(string)) return true;
-        if (typeof(UnityEngine.Object).IsAssignableFrom(type)) return true;
-        if (type.IsSerializable) return true;
-        return false;
-    }
+{
+    if (type.IsByRef) return false; // Out/ref parameters are not supported
+
+    // Allow primitives, strings, and enums
+    if (type.IsPrimitive || type == typeof(string) || type.IsEnum) return true;
+
+    // Allow common Unity structs
+    if (type == typeof(Color) || type == typeof(Vector2) || type == typeof(Vector3) || type == typeof(Vector4) || type == typeof(Quaternion) || type == typeof(Rect)) return true;
+
+    // Allow types that derive from UnityEngine.Object (e.g., Transform, GameObject, Material)
+    if (typeof(UnityEngine.Object).IsAssignableFrom(type)) return true;
+    
+    // Allow any other type that has the [Serializable] attribute, which covers custom structs.
+    // This allows Odin to attempt to draw it.
+    if (type.IsSerializable) return true;
+
+    return false;
+}
 }
