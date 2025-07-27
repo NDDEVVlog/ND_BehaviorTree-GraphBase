@@ -1,57 +1,103 @@
-// --- START OF FILE GenericParameter.cs (Simplified) ---
+// --- START OF FILE GenericParameter.cs ---
 
 using System;
-using Sirenix.OdinInspector;
+using System.Reflection;
 using UnityEngine;
 
+// Lớp GenericParameter<T> vẫn giữ nguyên
 [Serializable]
 public class GenericParameter<T> : GenericParameter
 {
-    // This is the only value field we need now.
-    [HideLabel] // We'll draw the label using the parameterName in our custom drawer.
     public T constantValue;
 
     public override object GetValue()
     {
-        return constantValue;
+        if (useConstant)
+        {
+            return constantValue;
+        }
+        
+        object sourceValue = GetValueFromSource();
+        if (sourceValue == null) return default(T);
+        
+        if (sourceValue is T variable)
+        {
+            return variable;
+        }
+        
+        try
+        {
+            return Convert.ChangeType(sourceValue, typeof(T));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Could not convert dynamic parameter '{sourceFieldName}' of type {sourceValue.GetType().Name} to {typeof(T).Name}. Error: {e.Message}", sourceComponent);
+            return default(T);
+        }
     }
 
     public override Type GetParameterType()
     {
         return typeof(T);
     }
-    
-    public override void SetConstantValue(object value)
+}
+
+// Lớp trừu tượng GenericParameter cũng giữ nguyên
+[Serializable]
+public abstract class GenericParameter
+{
+    public string parameterName;
+    public bool useConstant = true;
+    public Component sourceComponent;
+    public string sourceFieldName;
+
+    public abstract object GetValue();
+    public abstract Type GetParameterType();
+
+    protected object GetValueFromSource()
     {
-        if (value is T typedValue)
+        // ... (giữ nguyên code của bạn)
+        if (sourceComponent == null || string.IsNullOrEmpty(sourceFieldName))
         {
-            this.constantValue = typedValue;
+            Debug.LogError("Dynamic parameter source is not configured.", sourceComponent);
+            return null;
         }
-        else
+
+        Type sourceType = sourceComponent.GetType();
+
+        PropertyInfo propInfo = sourceType.GetProperty(sourceFieldName, BindingFlags.Public | BindingFlags.Instance);
+        if (propInfo != null && propInfo.CanRead)
         {
-            try
-            {
-                this.constantValue = (T)Convert.ChangeType(value, typeof(T));
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Failed to set parameter '{parameterName}'. Cannot convert type {value?.GetType().Name ?? "null"} to {typeof(T).Name}. Error: {e.Message}");
-            }
+            return propInfo.GetValue(sourceComponent);
         }
+
+        FieldInfo fieldInfo = sourceType.GetField(sourceFieldName, BindingFlags.Public | BindingFlags.Instance);
+        if (fieldInfo != null)
+        {
+            return fieldInfo.GetValue(sourceComponent);
+        }
+
+        Debug.LogError($"Could not find public property or field named '{sourceFieldName}' on component '{sourceType.Name}'.", sourceComponent);
+        return null;
     }
 }
 
+// ===================================================================
+// == THÊM CÁC CLASS CON CỤ THỂ VÀO ĐÂY ==
+// == Unity cần các class này để có thể serialize được. ==
+// ===================================================================
+//
+[Serializable] public class StringParameter : GenericParameter<string> {}
+[Serializable] public class FloatParameter : GenericParameter<float> {}
+[Serializable] public class IntParameter : GenericParameter<int> {}
+[Serializable] public class BoolParameter : GenericParameter<bool> {}
+[Serializable] public class Vector3Parameter : GenericParameter<Vector3> {}
+[Serializable] public class Vector2Parameter : GenericParameter<Vector2> {}
+[Serializable] public class ColorParameter : GenericParameter<Color> {}
+[Serializable] public class GameObjectParameter : GenericParameter<GameObject> {}
+[Serializable] public class ComponentParameter : GenericParameter<Component> { }
 
-[Serializable]
-public abstract class GenericParameter
-{   
-    // We still need this for UI labels and for programmatic lookup.
-    [HideInInspector]
-    public string parameterName;
+[Serializable] public class TransformParameter : GenericParameter<Transform> {}
 
-    // --- ALL DYNAMIC BINDING LOGIC HAS BEEN REMOVED ---
-    
-    public abstract object GetValue();
-    public abstract Type GetParameterType();
-    public abstract void SetConstantValue(object value);
-}
+// Bạn cũng có thể thêm các kiểu tùy chỉnh của mình, miễn là chúng [Serializable]
+[Serializable] public class DamageInfoParameter : GenericParameter<DamageInfo> {}

@@ -1,83 +1,50 @@
-// --- START OF FILE DynamicEvent.cs (Updated) ---
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using Sirenix.Serialization;
 
-// [Serializable] is no longer needed because Odin handles this class.
+[Serializable]
 public class DynamicEvent
 {
-    [BoxGroup("Event Settings")]
     public string eventName;
-
-    [BoxGroup("Event Settings")]
-    [OnValueChanged("ClearMethodSelection")]
     public Component target;
-
-    [BoxGroup("Event Settings")]
-    [ValueDropdown("GetAvailableMethods")]
-    [OnValueChanged("OnMethodSelected")]
-    [ShowIf("target")]
-    [DisplayAsString(false)]
     public string methodName;
 
-    [BoxGroup("Parameters")]
-    // --- KEY CHANGE HERE ---
-    // Remove [OdinSerialize] and the ListDrawerSettings.
-    // The GenericParameterDrawer will handle drawing each item.
+    [OdinSerialize]
     public List<GenericParameter> genericParameters = new List<GenericParameter>();
-    
-    public void SetParameterValue<T>(string parameterName, T value)
-    {
-        // ... (rest of the file is unchanged) ...
-// ... (rest of the file is unchanged) ...
-// ... (rest of the file is unchanged) ...
-        var parameter = genericParameters.FirstOrDefault(p => p.parameterName == parameterName);
-
-        if (parameter == null)
-        {
-            Debug.LogWarning($"In event '{eventName}', could not find a parameter named '{parameterName}'.", target);
-            return;
-        }
-
-        parameter.SetConstantValue(value);
-    }
-
 
     public void Invoke()
     {
-        if (target == null || string.IsNullOrEmpty(methodName))
+        if (target == null)
         {
-            if(target == null) Debug.LogError($"DynamicEvent '{eventName}': Target component is null.", target);
-            if(string.IsNullOrEmpty(methodName)) Debug.LogError($"DynamicEvent '{eventName}': Method name is not specified.", target);
+            Debug.LogError($"DynamicEvent '{eventName}': Target component is null.", target);
             return;
         }
 
-        MethodInfo methodInfo = target.GetType()
-            .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-            .FirstOrDefault(m => MethodSignature(m) == this.methodName);
-
-        if (methodInfo == null)
+        if (string.IsNullOrEmpty(methodName))
         {
-             methodInfo = target.GetType()
-                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                .FirstOrDefault(m => MethodSignature(m) == this.methodName);
+            Debug.LogError($"DynamicEvent '{eventName}': Method name is not specified.", target);
+            return;
         }
+        
+        var paramTypes = genericParameters.Select(p => p.GetParameterType()).ToArray();
+        var paramValues = genericParameters.Select(p => p.GetValue()).ToArray();
+
+        MethodInfo methodInfo = target.GetType().GetMethod(methodName, paramTypes);
 
         if (methodInfo != null)
         {
-            var paramValues = genericParameters.Select(p => p.GetValue()).ToArray();
             methodInfo.Invoke(target, paramValues);
         }
         else
         {
-            Debug.LogError($"DynamicEvent '{eventName}': Method with signature '{methodName}' not found on component '{target.GetType().Name}'.", target);
+            var typesStr = string.Join(", ", paramTypes.Select(t => t.Name));
+            Debug.LogError($"DynamicEvent '{eventName}': Method '{methodName}({typesStr})' not found on component '{target.GetType().Name}'.", target);
         }
     }
+<<<<<<< HEAD
 
     private void ClearMethodSelection()
     {
@@ -156,4 +123,6 @@ public class DynamicEvent
 
     return false;
 }
+=======
+>>>>>>> parent of 7c3eac6 (Odin Animation Hub Version)
 }
