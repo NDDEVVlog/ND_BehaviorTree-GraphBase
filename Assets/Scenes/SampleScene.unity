@@ -467,11 +467,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eventToAction: 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> parent of 3fce19f (Little Update)
 =======
 >>>>>>> parent of 3fce19f (Little Update)
 =======
+=======
+>>>>>>> parent of 7c3eac6 (Odin Animation Hub Version)
   dynamicEvents:
   - eventName: 
     target: {fileID: 0}
@@ -480,6 +483,9 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
+<<<<<<< HEAD
+>>>>>>> parent of 7c3eac6 (Odin Animation Hub Version)
+=======
 >>>>>>> parent of 7c3eac6 (Odin Animation Hub Version)
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

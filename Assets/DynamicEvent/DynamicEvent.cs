@@ -44,7 +44,6 @@ public class DynamicEvent
             Debug.LogError($"DynamicEvent '{eventName}': Method '{methodName}({typesStr})' not found on component '{target.GetType().Name}'.", target);
         }
     }
-<<<<<<< HEAD
 
     private void ClearMethodSelection()
     {
@@ -123,6 +122,4 @@ public class DynamicEvent
 
     return false;
 }
-=======
->>>>>>> parent of 7c3eac6 (Odin Animation Hub Version)
 }
