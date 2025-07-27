@@ -24,7 +24,6 @@ public class AnimationEventHub : SerializedMonoBehaviour
         dynamicEvents.Add(new DynamicEvent());
     }
 
-    [Button]
     public void TriggerEvent(string eventName)
     {
         DynamicEvent eventToTrigger = dynamicEvents.FirstOrDefault(e => e.eventName == eventName);
